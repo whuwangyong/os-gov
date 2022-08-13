@@ -1,8 +1,7 @@
 package cn.whu.wy.osgov.advice;
 
-import cn.whu.wy.osgov.dto.response.ResponseCode;
 import cn.whu.wy.osgov.dto.response.ResponseEntity;
-import cn.whu.wy.osgov.exception.UserNotFundException;
+import cn.whu.wy.osgov.exception.NotFundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,12 +19,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionAdvice {
 
-    @ExceptionHandler(UserNotFundException.class)
+    @ExceptionHandler(NotFundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    ResponseEntity userNotFoundHandler(UserNotFundException e) {
+    ResponseEntity notFoundHandler(NotFundException e) {
         e.printStackTrace();
         log.error(e.getMessage());
-        return new ResponseEntity(ResponseCode.USER_NOT_FOUND);
+        return ResponseEntity.fail(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
@@ -33,7 +32,7 @@ public class GlobalExceptionAdvice {
     ResponseEntity commonExceptionHandler(Exception e) {
         e.printStackTrace();
         log.error(e.getMessage());
-        return new ResponseEntity(1, e.getMessage());
+        return ResponseEntity.fail(e.getMessage());
     }
 
     // 可继续定义一些其他的异常处理器

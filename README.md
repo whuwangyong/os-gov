@@ -68,3 +68,8 @@
 3. 根据`component_id`查询`component_vulnerability`，返回漏洞id列表
 4. 根据`vulnerability_id`查询漏洞表，获取漏洞详情列表
 
+## 架构设计
+
+- `class Entity`，仅有id字段。所有的表都继承该类
+- `class BaseRepository<T extends Entity>`，实现通用的增删改查
+- `class BaseController<T extends Entity>`，实现通用的增删改查

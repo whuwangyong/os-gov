@@ -2,7 +2,6 @@ package cn.whu.wy.osgov.test;
 
 import cn.whu.wy.osgov.entity.Component;
 import cn.whu.wy.osgov.repository.ComponentRepository;
-import cn.whu.wy.osgov.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

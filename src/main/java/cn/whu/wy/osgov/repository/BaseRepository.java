@@ -1,7 +1,7 @@
 package cn.whu.wy.osgov.repository;
 
 import cn.whu.wy.osgov.entity.Entity;
-import cn.whu.wy.osgov.exception.UserNotFundException;
+import cn.whu.wy.osgov.exception.NotFundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author WangYong
@@ -59,7 +60,8 @@ public abstract class BaseRepository<T extends Entity> {
             log.info("findById: id={}, res={}", id, t);
             return t;
         } catch (EmptyResultDataAccessException e) {
-            throw new UserNotFundException("id=" + id);
+            String s = String.format("table=%s, id=%d", tableName(), id);
+            throw new NotFundException(s, e);
         }
     }
 
@@ -95,6 +97,21 @@ public abstract class BaseRepository<T extends Entity> {
         return list;
     }
 
+    /**
+     * 根据条件模糊查询。不支持分页
+     *
+     * @param params
+     * @return
+     */
+    public List<T> query(Map<String, String> params) {
+        StringBuilder sb = new StringBuilder("select * from " + tableName() + " where ");
+        params.forEach((k, v) -> sb.append(k).append(" like '%").append(v).append("%' or "));
+        // 删除末尾多余的or
+        sb.delete(sb.length() - 4, sb.length());
+
+        return jdbcTemplate.query(sb.toString(), rowMapper);
+    }
+
 
     /**
      * 根据主键删除一条记录
@@ -106,7 +123,7 @@ public abstract class BaseRepository<T extends Entity> {
     }
 
     /**
-     * 采用先删除，再插入的方式进行更新。数据的主键id不会变，但是物理顺序变了。
+     * 采用先删除，再插入的方式进行更新。数据的主键id会变。
      *
      * @param t 全对象覆盖更新，不允许里面有空字段
      */

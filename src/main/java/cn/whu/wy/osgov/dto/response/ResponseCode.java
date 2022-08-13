@@ -12,11 +12,12 @@ public enum ResponseCode {
     SUCCESS(0, "成功"),
     FAILURE(1, "服务异常，请稍后再试"),
 
-    USER_NOT_FOUND(100, "用户不存在");
+
+    NOT_FOUND(100, "目标不存在");
 
 
-    int code;
-    String msg;
+    private final int code;
+    private final String msg;
 
     ResponseCode(int code, String msg) {
         this.code = code;
