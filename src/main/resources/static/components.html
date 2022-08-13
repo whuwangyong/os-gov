@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8"/>
+    <title>amis demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="stylesheet" href="sdk/sdk.css"/>
+    <link rel="stylesheet" href="sdk/helper.css"/>
+    <link rel="stylesheet" href="sdk/iconfont.css"/>
+    <!-- 这是默认主题所需的，如果是其他主题则不需要 -->
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="root" class="app-wrapper"></div>
+<script src="sdk/sdk.js"></script>
+<script type="text/javascript">
+    (function () {
+        let amis = amisRequire('amis/embed');
+        // 通过替换下面这个配置来生成不同页面
+        let amisJSON = {
+            "type": "page",
+            "title": "标题",
+            "body": [
+                {
+                    "type": "crud",
+                    "syncLocation": false,
+                    "api": {
+                        "method": "get",
+                        "url": "/api/components"
+                    },
+                    "columns": [
+                        {
+                            "name": "id",
+                            "label": "ID",
+                            "type": "text",
+                            "id": "u:30357bf93532"
+                        },
+                        {
+                            "name": "groupId",
+                            "label": "groupId",
+                            "type": "text",
+                            "id": "u:048b03f3dc41"
+                        },
+                        {
+                            "type": "text",
+                            "label": "artifactId",
+                            "name": "artifactId",
+                            "id": "u:d405c308b09f"
+                        },
+                        {
+                            "type": "text",
+                            "label": "version",
+                            "name": "version",
+                            "id": "u:cf87589f4505"
+                        },
+                        {
+                            "type": "operation",
+                            "label": "操作",
+                            "buttons": [
+                                {
+                                    "label": "编辑",
+                                    "type": "button",
+                                    "actionType": "dialog",
+                                    "level": "link",
+                                    "dialog": {
+                                        "title": "编辑",
+                                        "body": {
+                                            "type": "form",
+                                            "api": "put:/api/components",
+                                            "body": [
+                                                {
+                                                    "name": "id",
+                                                    "label": "ID",
+                                                    "type": "input-text"
+                                                },
+                                                {
+                                                    "name": "groupId",
+                                                    "label": "groupId",
+                                                    "type": "input-text"
+                                                },
+                                                {
+                                                    "label": "artifactId",
+                                                    "name": "artifactId",
+                                                    "type": "input-text"
+                                                },
+                                                {
+                                                    "label": "version",
+                                                    "name": "version",
+                                                    "type": "input-text"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "id": "u:2a99f4f7000f"
+                                },
+                                {
+                                    "label": "查看",
+                                    "type": "button",
+                                    "actionType": "dialog",
+                                    "level": "link",
+                                    "dialog": {
+                                        "title": "查看详情",
+                                        "body": {
+                                            "type": "form",
+                                            "body": [
+                                                {
+                                                    "name": "id",
+                                                    "label": "ID",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "name": "groupId",
+                                                    "label": "groupId",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "label": "artifactId",
+                                                    "name": "artifactId",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "label": "version",
+                                                    "name": "version",
+                                                    "type": "static"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "id": "u:4f3d2f2992b6"
+                                },
+                                {
+                                    "type": "button",
+                                    "label": "删除",
+                                    "actionType": "ajax",
+                                    "level": "link",
+                                    "className": "text-danger",
+                                    "confirmText": "确定要删除？",
+                                    "api": {
+                                        "method": "delete",
+                                        "url": "/api/components/${id}"
+                                    },
+                                    "id": "u:2daeb8129eec"
+                                }
+                            ],
+                            "id": "u:5803a2f04b73"
+                        }
+                    ],
+                    "bulkActions": [],
+                    "itemActions": [],
+                    "features": [
+                        "create",
+                        "filter",
+                        "update",
+                        "view",
+                        "delete"
+                    ],
+                    "filterColumnCount": 3,
+                    "headerToolbar": [
+                        {
+                            "label": "新增",
+                            "type": "button",
+                            "actionType": "dialog",
+                            "level": "primary",
+                            "dialog": {
+                                "title": "新增",
+                                "body": {
+                                    "type": "form",
+                                    "api": {
+                                        "method": "post",
+                                        "url": "/api/components"
+                                    },
+                                    "body": [
+                                        {
+                                            "type": "input-text",
+                                            "name": "id",
+                                            "label": "ID"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "groupId",
+                                            "label": "groupId"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "artifactId",
+                                            "label": "artifactId"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "version",
+                                            "label": "version"
+                                        }
+                                    ]
+                                }
+                            },
+                            "id": "u:61927e18cdd2"
+                        },
+                        {
+                            "type": "bulk-actions"
+                        },
+                        {
+                            "type": "export-excel",
+                            "tpl": "内容",
+                            "id": "u:5e7f4dfc77cd"
+                        }
+                    ],
+                    "id": "u:d08d56808c15",
+                    "perPageAvailable": [
+                        10
+                    ],
+                    "messages": {},
+                    "perPageField": "pageSize",
+                    "perPage": 20,
+                    "filter": {
+                        "title": "查询条件",
+                        "body": [
+                            {
+                                "type": "input-text",
+                                "name": "artifactId",
+                                "label": "artifactId",
+                                "id": "u:773f1c15a9f2"
+                            }
+                        ],
+                        "id": "u:1d2a1be29e51"
+                    }
+                }
+            ],
+            "id": "u:315f827062f0",
+            "aside": [
+                {
+                    "type": "nav",
+                    "stacked": true,
+                    "links": [
+                        {
+                            "label": "组件",
+                            "to": "/components.html"
+                        },
+                        {
+                            "label": "软件",
+                            "to": "/components.html"
+                        }
+                    ],
+                    "id": "u:6905cecb9b98"
+                }
+            ],
+            "messages": {},
+            "pullRefresh": {},
+            "subTitle": "副标题",
+            "remark": "提示"
+        };
+        let amisScoped = amis.embed(
+            '#root',
+            amisJSON,
+            {},
+            {}
+        );
+    })();
+</script>
+</body>
+</html>
