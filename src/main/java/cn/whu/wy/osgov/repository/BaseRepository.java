@@ -2,6 +2,8 @@ package cn.whu.wy.osgov.repository;
 
 import cn.whu.wy.osgov.entity.Entity;
 import cn.whu.wy.osgov.exception.NotFundException;
+import cn.whu.wy.osgov.utils.Helper;
+import com.google.common.base.CaseFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -105,11 +107,13 @@ public abstract class BaseRepository<T extends Entity> {
      */
     public List<T> query(Map<String, String> params) {
         StringBuilder sb = new StringBuilder("select * from " + tableName() + " where ");
-        params.forEach((k, v) -> sb.append(k).append(" like '%").append(v).append("%' or "));
-        // 删除末尾多余的or
+        params.forEach((k, v) -> sb.append(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, k)).append(" like '%").append(v).append("%' or "));
+        // 删除末尾多余的' or '
         sb.delete(sb.length() - 4, sb.length());
 
-        return jdbcTemplate.query(sb.toString(), rowMapper);
+        String sql = sb.toString();
+        log.info("query: params={}, sql={}", params, sql);
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
 
@@ -123,15 +127,44 @@ public abstract class BaseRepository<T extends Entity> {
     }
 
     /**
-     * 采用先删除，再插入的方式进行更新。数据的主键id会变。
+     * 逐字段更新。主键不变。
+     * 注意：没有检查传入对象是否包含空字段。
+     * 1. 可以交由数据库进行约束
+     * 2. 与前端约定，必须传入完成的对象，未改动的字段也必须一起传过来
+     *
+     * @param t
+     * @return
+     */
+    public int update(T t) {
+        if (findById(t.getId()) != null) {
+            StringBuilder sb = new StringBuilder("update " + tableName() + " set ");
+            Map<String, Object> fieldsValue = Helper.getFieldsValue(t);
+            fieldsValue.forEach((k, v) -> sb.append(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, k))
+                    .append("='").append(v).append("', "));
+            // 删掉末尾多余的', '
+            sb.delete(sb.length() - 2, sb.length());
+            sb.append(" where id=").append(t.getId());
+            String sql = sb.toString();
+            log.info("update: sql={}", sql);
+            return jdbcTemplate.update(sql);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 采用先删除，再插入的方式进行更新。缺点是数据的主键id会变
      *
      * @param t 全对象覆盖更新，不允许里面有空字段
      */
     @Transactional
-    public boolean update(T t) {
+    @Deprecated
+    public boolean replace(T t) {
         T old = findById(t.getId());
         if (old != null) {
             delete(old.getId());
+            // Transactional注解有效。比如在这里进行除零操作，会发现delete未提交。
+            // int a=2/0;
             add(t);
             return true;
         } else {
