@@ -1,10 +1,8 @@
 package cn.whu.wy.osgov.repository;
 
-import cn.whu.wy.osgov.entity.Component;
+import cn.whu.wy.osgov.entity.component.Artifact;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -16,11 +14,11 @@ import javax.sql.DataSource;
  */
 @Repository
 @Slf4j
-public class ComponentRepository extends BaseRepository<Component> {
+public class ComponentRepository extends BaseRepository<Artifact> {
 
     @Autowired
     public ComponentRepository(DataSource dataSource) {
-        super(dataSource, Component.class);
+        super(dataSource, Artifact.class);
     }
 
     @Override

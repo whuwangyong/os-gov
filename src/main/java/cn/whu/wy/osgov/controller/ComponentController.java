@@ -1,6 +1,6 @@
 package cn.whu.wy.osgov.controller;
 
-import cn.whu.wy.osgov.entity.Component;
+import cn.whu.wy.osgov.entity.component.Artifact;
 import cn.whu.wy.osgov.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/components")
-public class ComponentController extends BaseController<Component> {
+public class ComponentController extends BaseController<Artifact> {
 
     @Autowired
-    public ComponentController(BaseRepository<Component> repository) {
+    public ComponentController(BaseRepository<Artifact> repository) {
         super(repository);
     }
 }

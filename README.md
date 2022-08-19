@@ -1,62 +1,152 @@
 # 开源治理工具设计
 
+## 数据模型
+
+### 术语
+
+- pk 主键
+- idx 索引
+- uidx 唯一索引
+- NA 不适用
+
+### 制品表(artifact)
+
+> - 包含组件、软件、工具，通过type字段区分。
+>   - 组件：zk客户端
+>   - 软件：zk服务端，可独立运行
+>   - 工具：mattermost、sonarqube等开发测试运维工具
+> - 联合索引：uidx: (org, name, version)，简称onv（之所以不叫gav是因为这里面不仅仅是maven仓库的组件）。
+> - 关于md5：可能存在gnv相同，但实际是不同版本的组件的情况。md5用于解决该问题。但是，这种不合规的组件，就不应该引入，它打破了gnv的唯一索引约束。
+
+| 字段         | 名称         | 类型          | 约束                         | 备注                        |
+| ------------ | ------------ | ------------- | ---------------------------- | --------------------------- |
+| id           | 自增id       | int           | pk                           |                             |
+| org          | 制品所在组织 | varchar(255)  | not null default 'NA'        | 前端组件、go module不适用？ |
+| name         | 制品名称     | varchar(255)  | idx，not null                |                             |
+| version      |              | varchar(50)   | not null                     |                             |
+| md5          |              | char(32)      |                              | 暂不使用                    |
+| publish_date | 发布日期     | date          |                              |                             |
+| author       | 软件来源     | varchar(10)   | 枚举：开源，自研，商业，信创 |                             |
+| type         | 开源分类     | varchar(10)   | 枚举：软件，组件，工具，NA   |                             |
+| license      |              | varchar(100)  | 枚举                         |                             |
+| description  | 简介         | varchar(1000) |                              |                             |
+
+### 制品标签表(artifact_tag)
+
+> 由于分类系统很难实现完备性，因此采用标签系统对制品进行标记以便检索。
+>
+> 比如ZooKeeper，如要分类，它需要同时存在于高可用、服务发现、命名空间等多个分类下。而使用标签系统，只需给ZooKeeper打3个标签，体现在该表里面，就是3行记录。如果对某个制品有新增标签，新增一行记录即可。
+>
+> 很明显，该表采用的是竖表设计。原因：
+>
+> 1. 标签都是字符串，类型一样；
+> 2. 标签需要查询。如果采用横表，一个制品的所有标签放在一个字段，那么该字段要么设计为json数组，要么自己做字符串切分。两种方案的crud都很低效。
+>
+> 该表的功能：
+>
+> 1. 根据制品查标签
+> 2. 根据标签查制品
+> 3. 增删改查制品的标签
+>
+> uidx：(artifact_id, tag_id)
+
+| 字段        | 字段名称 | 类型 | 约束      | 备注 |
+| ----------- | -------- | ---- | --------- | ---- |
+| id          | 自增id   | int  | pk        |      |
+| artifact_id | 制品id   | int  | idx，外键 |      |
+| tag_id      | 标签id   | int  | idx，外键 |      |
+
+### 标签表(tag)
+
+> 为什么标签需要单独建表，而不是直接往制品标签表里添加记录？
+>
+> 为了避免同样含义的标签出现多个，如日志、log、Log，都是一个东西。通过标签表，约束了为组件随意添加标签的行为，组件的标签必须来自标签表。而标签表里面标签的增删改都是经过评审的。
+
+| 字段        | 字段名称 | 类型 | 约束      | 备注 |
+| ----------- | -------- | ---- | --------- | ---- |
+| id          | 自增id   | int  | pk        |      |
+| name | 标签名 | varchar(50) | uidx |      |
+
+### 漏洞表(vulnerability)
+
+> 通过对`风险等级`和`利用难度`数值的设计，可以引出一个新的概念：危险系数。
+>
+> 危险系数 = 风险等级 * 利用难度，取值范围为`[0,3] * [0, 3]`，值越小，越危险。最小值为0，与0 day的含义一致。
+
+| 字段         | 字段名称 | 类型          | 约束                              | 备注 |
+| ------------ | -------- | ------------- | --------------------------------- | ---- |
+| id           | 自增id   | int           | pk                                |      |
+| cve          | 漏洞编号 | varchar(50)   | uidx                              |      |
+| cnnvd        | 漏洞编号 | varchar(50)   | uidx                              |      |
+| cwe          | 漏洞编号 | varchar(50)   | uidx                              |      |
+| name         | 漏洞名称 | varchar(255)  | idx                               |      |
+| level        | 风险等级 | char(1)       | 枚举：0-3，严重，高危，中危，低危 |      |
+| difficulty   | 利用难度 | char(1)       | 枚举：0-3，容易，一般，困难，未知 |      |
+| exposed_date | 曝光日期 | date          |                                   |      |
+| description  | 简介     | varchar(2000) |                                   |      |
+| suggestion   | 修复建议 | varchar(2000) |                                   |      |
+
+### 制品漏洞表(artifact_vulnerability)
+
+> 这也是个竖表，因为一个制品可能有多个漏洞。
+>
+> uidx: (artifact_id, vulnerability_id)
+
+| 字段             | 字段名称 | 类型 | 约束      | 备注 |
+| ---------------- | -------- | ---- | --------- | ---- |
+| id               | 自增id   | int  | pk        |      |
+| artifact_id      | 制品id   | int  | idx，外键 |      |
+| vulnerability_id | 漏洞id   | int  | idx，外键 |      |
+
+### 应用表(app)
+| 字段 | 字段名称 | 类型        | 约束                       | 备注 |
+| ---- | -------- | ----------- | -------------------------- | ---- |
+| id   | 自增id   | int         | pk                         |      |
+| name | 名称     | varchar(50) | idx, not null              |      |
+| env  | 环境     | varchar(10) | not null，枚举：生产，测试 |      |
 
 
-## pojo表
+### 制品应用表(artifact_app)
 
-### 组件表（component）
+> 描述制品与应用之间的关系；应用如何使用制品。
+>
+> 功能：
+>
+> - 根据制品id，找出所有使用了该制品的应用
+> - 根据应用id，找出该应用使用的全部制品
+>
+> uidx:(artifact_id, app_id)
 
-| 字段        | 字段名称 | 类型 | 备注 |
-| ----------- | -------- | ---- | ---- |
-| id          |          | long | pk   |
-| group_id    |          |      | idx  |
-| artifact_id |          |      | idx  |
-| version     |          |      |      |
+| 字段        | 字段名称 | 类型    | 约束      | 备注 |
+| ----------- | -------- | ------- | --------- | ---- |
+| id          | 自增id   | int     | pk        |      |
+| artifact_id | 制品id   | int     | idx，外键 |      |
+| app_id      | 应用id   | int     | idx，外键 |      |
+| re_dev      | 二次开发 | boolean |           |      |
+| support     | 厂商支持 | boolean |           |      |
 
+### 主机表(host)
+| 字段     | 字段名称 | 类型         | 约束                       | 备注 |
+| -------- | -------- | ------------ | -------------------------- | ---- |
+| id       | 自增id   | int          | pk                         |      |
+| ip       |          | int unsigned |                            |      |
+| hardware | 硬件     | varchar(10)  | 枚举：物理机，虚拟机，容器 |      |
+| network  | 网段     | varchar(10)  | 枚举：生产，办公，开发     |      |
 
-### 软件表（software）
+### 应用部署表(app_host)
 
-可独立运行的软件。如OpenLDAP、Kafka
+> 功能：
+>
+> - 根据应用id，找到其部署在哪些主机上
+> - 根据主机id，查询运行在主机上的应用
+>
+> uidx: (app_id, host_id)
 
-- id
-- group_id
-- artifact_id
-- version
-
-
-
-### 漏洞表（vulnerability）
-
-- id
-- cve
-- cnnvd
-- cwe
-- name
-- char(1) level 风险等级
-- exposed_date 曝光日期
-- description 描述
-- suggestion 修复建议
-
-
-
-### 漏洞等级表（vulnerability_level）
-
-- 0：严重
-- 1：高危
-- 2：中危
-- 3：低危
-- 4：无
-
-
-
-## 关联表
-
-### 组件漏洞表（component_vulnerability）
-
-- id
-- 组件id `component_id`
-- 漏洞id `vulnerability_id`
-
+| 字段    | 字段名称 | 类型    | 约束      | 备注 |
+| ------- | -------- | ------- | --------- | ---- |
+| id      | 自增id   | int     | pk        |      |
+| app_id  | 应用id   | int     | idx，外键 |      |
+| host_id | 主机id   | int     | idx，外键 |      |
 
 
 ## 领域
@@ -67,6 +157,13 @@
 2. 用户选定一个组件，查看该组件的漏洞信息
 3. 根据`component_id`查询`component_vulnerability`，返回漏洞id列表
 4. 根据`vulnerability_id`查询漏洞表，获取漏洞详情列表
+
+```sql
+select vulnerability_id from component_vulnerability where component_id=xxx;
+select * from vulnerability where vulnerability_id=xxx;
+```
+
+
 
 ## 架构设计
 

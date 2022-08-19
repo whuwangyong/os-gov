@@ -1,6 +1,6 @@
 package cn.whu.wy.osgov.test;
 
-import cn.whu.wy.osgov.entity.Component;
+import cn.whu.wy.osgov.entity.component.Artifact;
 import cn.whu.wy.osgov.repository.ComponentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
@@ -40,7 +40,7 @@ public class ComponentRepositoryTest {
         log.info("testAdd");
         for (int i = 1; i <= 1000; i++) {
             repository.add(
-                    Component.builder()
+                    Artifact.builder()
                             .groupId("org.test" + i % 10)
                             .artifactId("component-" + i)
                             .version("0.0.1")
