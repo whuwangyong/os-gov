@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,15 @@ public abstract class BaseRepository<T extends Entity> {
         Number number = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource);
         log.info("add: {}, return key={}", t, number);
         return number.intValue();
+    }
+
+    public int[] add(List<T> tList) {
+        List<BeanPropertySqlParameterSource> list = new ArrayList<>();
+        tList.forEach(t -> list.add(new BeanPropertySqlParameterSource(t)));
+        BeanPropertySqlParameterSource[] sqlParameterSources = list.toArray(new BeanPropertySqlParameterSource[0]);
+        // TODO
+        String sql = "";
+        return npJdbcTemplate.batchUpdate(sql, sqlParameterSources);
     }
 
     /**
@@ -129,7 +139,7 @@ public abstract class BaseRepository<T extends Entity> {
     /**
      * 逐字段更新。主键不变。
      * 注意：没有检查传入对象是否包含空字段。
-     * 1. 可以交由数据库进行约束
+     * 1. 可以由数据库进行约束
      * 2. 与前端约定，必须传入完成的对象，未改动的字段也必须一起传过来
      *
      * @param t

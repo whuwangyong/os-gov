@@ -1,6 +1,6 @@
 package cn.whu.wy.osgov.test;
 
-import cn.whu.wy.osgov.entity.component.Artifact;
+import cn.whu.wy.osgov.entity.artifact.Artifact;
 import cn.whu.wy.osgov.utils.Helper;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +14,8 @@ import java.util.Map;
 public class HelperTest {
 
     @Test
-    public void testGetFieldsValue() throws IllegalAccessException {
-        Artifact kafka = Artifact.builder().groupId("org.apache").artifactId("kafka").version("2.8.0").build();
+    public void testGetFieldsValue() {
+        Artifact kafka = Artifact.builder().org("org.apache").name("kafka").version("2.8.0").build();
         kafka.setId(1);
         Map<String, Object> fieldsValue = Helper.getFieldsValue(kafka);
         assert fieldsValue.get("groupId").equals("org.apache");

@@ -1,4 +1,4 @@
-package cn.whu.wy.osgov.controller;
+package cn.whu.wy.osgov.controller.anemic;
 
 import cn.whu.wy.osgov.dto.response.ResponseEntity;
 import cn.whu.wy.osgov.entity.Entity;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Date 2022/08/11
  * Time 09:38
  */
-public class BaseController<T extends Entity> {
+public abstract class BaseController<T extends Entity> {
 
     protected final BaseRepository<T> repository;
 

@@ -1,7 +1,9 @@
 package cn.whu.wy.osgov.test;
 
-import cn.whu.wy.osgov.entity.component.Artifact;
-import cn.whu.wy.osgov.repository.ComponentRepository;
+import cn.whu.wy.osgov.entity.artifact.Artifact;
+import cn.whu.wy.osgov.entity.artifact.Author;
+import cn.whu.wy.osgov.entity.artifact.Role;
+import cn.whu.wy.osgov.repository.ArtifactRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.time.LocalDate;
+
 /**
  * @author WangYong
  * Date 2022/08/11
@@ -19,10 +23,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Slf4j
-public class ComponentRepositoryTest {
+public class ArtifactRepositoryTest {
 
     @Autowired
-    ComponentRepository repository;
+    ArtifactRepository repository;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -31,7 +35,7 @@ public class ComponentRepositoryTest {
     @Test
     public void init() {
         log.info("init");
-        jdbcTemplate.execute("truncate component");
+        jdbcTemplate.execute("USE test; DELETE FROM artifact; ALTER TABLE artifact AUTO_INCREMENT=1");
     }
 
     @Order(2)
@@ -41,9 +45,12 @@ public class ComponentRepositoryTest {
         for (int i = 1; i <= 1000; i++) {
             repository.add(
                     Artifact.builder()
-                            .groupId("org.test" + i % 10)
-                            .artifactId("component-" + i)
-                            .version("0.0.1")
+                            .org("org.test" + i % 10)
+                            .name("component-" + i)
+                            .version("0." + i)
+                            .publishDate(LocalDate.now())
+                            .author(Author.OpenSource)
+                            .role(Role.Component)
                             .build()
             );
         }

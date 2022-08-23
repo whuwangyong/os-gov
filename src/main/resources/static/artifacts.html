@@ -42,10 +42,10 @@
                 {
                     "type": "crud",
                     "id": "u:d08d56808c15",
-                    "syncLocation": false,
+                    "syncLocation": true,
                     "api": {
                         "method": "get",
-                        "url": "/api/components"
+                        "url": "/api/artifacts"
                     },
                     "columns": [
                         {
@@ -55,22 +55,52 @@
                             "id": "u:30357bf93532"
                         },
                         {
-                            "name": "groupId",
-                            "label": "groupId",
+                            "name": "org",
+                            "label": "组织",
                             "type": "text",
                             "id": "u:048b03f3dc41"
                         },
                         {
                             "type": "text",
-                            "label": "artifactId",
-                            "name": "artifactId",
+                            "label": "名称",
+                            "name": "name",
                             "id": "u:d405c308b09f"
                         },
                         {
                             "type": "text",
-                            "label": "version",
+                            "label": "版本",
                             "name": "version",
                             "id": "u:cf87589f4505"
+                        },
+                        {
+                            "type": "date",
+                            "label": "发布日期",
+                            "name": "publishDate",
+                            "id": "u:2911198348cc"
+                        },
+                        {
+                            "type": "text",
+                            "label": "来源",
+                            "name": "author",
+                            "id": "u:701f78f17c58"
+                        },
+                        {
+                            "type": "text",
+                            "label": "粒度",
+                            "name": "grade",
+                            "id": "u:693aecc3aa2f"
+                        },
+                        {
+                            "type": "text",
+                            "label": "协议",
+                            "name": "license",
+                            "id": "u:03f5a4831b57"
+                        },
+                        {
+                            "type": "text",
+                            "label": "简介",
+                            "name": "description",
+                            "id": "u:16d59c29ac66"
                         },
                         {
                             "type": "operation",
@@ -85,28 +115,59 @@
                                         "title": "编辑",
                                         "body": {
                                             "type": "form",
-                                            "api": "put:/api/components",
+                                            "api": "put:/api/artifacts",
                                             "body": [
                                                 {
+                                                    "label": "id",
                                                     "name": "id",
-                                                    "label": "ID",
-                                                    "type": "input-text"
+                                                    "type": "input-text",
+                                                    "readOnly": true
                                                 },
                                                 {
-                                                    "name": "groupId",
-                                                    "label": "groupId",
-                                                    "type": "input-text"
+                                                    "label": "组织",
+                                                    "name": "org",
+                                                    "type": "input-text",
+                                                    "readOnly": true
                                                 },
                                                 {
-                                                    "label": "artifactId",
-                                                    "name": "artifactId",
-                                                    "type": "input-text"
+                                                    "label": "名称",
+                                                    "name": "name",
+                                                    "type": "input-text",
+                                                    "readOnly": true
                                                 },
                                                 {
-                                                    "label": "version",
+                                                    "label": "版本",
                                                     "name": "version",
+                                                    "type": "input-text",
+                                                    "readOnly": true
+                                                },
+                                                {
+                                                    "label": "发布日期",
+                                                    "name": "publishDate",
+                                                    "type": "input-text",
+                                                    "readOnly": true
+                                                },
+                                                {
+                                                    "label": "来源",
+                                                    "name": "author",
                                                     "type": "input-text"
-                                                }
+                                                },
+                                                {
+                                                    "label": "粒度",
+                                                    "name": "grade",
+                                                    "type": "input-text"
+                                                },
+                                                {
+                                                    "label": "协议",
+                                                    "name": "license",
+                                                    "type": "input-text"
+                                                },
+                                                {
+                                                    "label": "描述",
+                                                    "name": "description",
+                                                    "type": "input-text"
+                                                },
+
                                             ]
                                         }
                                     },
@@ -156,7 +217,7 @@
                                     "confirmText": "确定要删除？",
                                     "api": {
                                         "method": "delete",
-                                        "url": "/api/components/${id}"
+                                        "url": "/api/artifacts/${id}"
                                     },
                                     "id": "u:2daeb8129eec"
                                 }
@@ -173,7 +234,7 @@
                         "view",
                         "delete"
                     ],
-                    "filterColumnCount": 3,
+                    "filterColumnCount": 4,
                     "headerToolbar": [
                         {
                             "label": "新增",
@@ -186,7 +247,7 @@
                                     "type": "form",
                                     "api": {
                                         "method": "post",
-                                        "url": "/api/components"
+                                        "url": "/api/artifacts"
                                     },
                                     "body": [
                                         {
@@ -196,35 +257,57 @@
                                         },
                                         {
                                             "type": "input-text",
-                                            "name": "groupId",
-                                            "label": "groupId"
+                                            "name": "org",
+                                            "label": "组织"
                                         },
                                         {
                                             "type": "input-text",
-                                            "name": "artifactId",
-                                            "label": "artifactId"
+                                            "name": "name",
+                                            "label": "名称"
                                         },
                                         {
                                             "type": "input-text",
                                             "name": "version",
-                                            "label": "version"
+                                            "label": "版本"
+                                        },
+                                        {
+                                            "type": "input-date",
+                                            "name": "publishDate",
+                                            "label": "发布日期"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "author",
+                                            "label": "来源"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "grade",
+                                            "label": "粒度"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "license",
+                                            "label": "协议"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "description",
+                                            "label": "简介"
+                                        },
+                                        {
+                                            "type": "input-operation",
+                                            "label": "操作"
                                         }
                                     ]
                                 }
                             },
-                            "id": "u:61927e18cdd2"
+                            "id": "u:82bc140f194e"
                         },
-                        {
-                            "type": "bulk-actions"
-                        },
-                        {
-                            "type": "export-excel",
-                            "tpl": "内容",
-                            "id": "u:5e7f4dfc77cd"
-                        }
+                        "bulkActions"
                     ],
                     "perPageAvailable": [
-                        10
+                        50
                     ],
                     "messages": {},
                     "perPageField": "pageSize",
@@ -234,8 +317,8 @@
                         "body": [
                             {
                                 "type": "input-text",
-                                "name": "artifactId",
-                                "label": "artifactId",
+                                "name": "name",
+                                "label": "name",
                                 "id": "u:773f1c15a9f2"
                             }
                         ],

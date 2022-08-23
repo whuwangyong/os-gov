@@ -9,8 +9,7 @@ public enum VulLevel {
     SERIOUS(0, "严重"),
     HIGH(1, "高危"),
     MIDDLE(2, "中危"),
-    LOW(3, "低危"),
-    NONE(4, "无");
+    LOW(3, "低危");
 
     int code;
     String desc;

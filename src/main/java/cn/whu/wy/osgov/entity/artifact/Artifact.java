@@ -1,10 +1,10 @@
-package cn.whu.wy.osgov.entity.component;
+package cn.whu.wy.osgov.entity.artifact;
 
 import cn.whu.wy.osgov.entity.Entity;
 import cn.whu.wy.osgov.utils.VersionSortable;
 import lombok.*;
 
-import java.util.List;
+import java.time.LocalDate;
 
 /**
  * @author WangYong
@@ -19,25 +19,18 @@ import java.util.List;
 public class Artifact extends Entity implements VersionSortable {
 
     // 前端和go module不适用
-    private String groupId;
+    private String org;
 
-    private String artifactId;
+    private String name;
     private String version;
 
-    // 给组件打标签，用于分类。一个组件可有多个标签。
-    private List<Tag> tags;
+    private LocalDate publishDate;
 
     // 来源
     private Author author;
-    private License license;
 
-    // 是否有漏洞
-    private boolean exposed;
+    private Role role;
 
-    // 是否二次开发
-    private boolean reDev;
-
-    // 是否有厂商支持
-    private boolean support;
+    private String description;
 
 }

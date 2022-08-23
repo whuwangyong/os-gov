@@ -1,8 +1,7 @@
 package cn.whu.wy.osgov.repository;
 
-import cn.whu.wy.osgov.entity.component.Artifact;
+import cn.whu.wy.osgov.entity.artifact.Artifact;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -14,15 +13,14 @@ import javax.sql.DataSource;
  */
 @Repository
 @Slf4j
-public class ComponentRepository extends BaseRepository<Artifact> {
+public class ArtifactRepository extends BaseRepository<Artifact> {
 
-    @Autowired
-    public ComponentRepository(DataSource dataSource) {
+    public ArtifactRepository(DataSource dataSource) {
         super(dataSource, Artifact.class);
     }
 
     @Override
     String tableName() {
-        return "component";
+        return "artifact";
     }
 }
