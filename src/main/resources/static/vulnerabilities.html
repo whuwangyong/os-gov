@@ -37,67 +37,78 @@
         // 通过替换下面这个配置来生成不同页面
         let amisJSON = {
             "type": "page",
-            "id": "u:315f827062f0",
-            "title": "制品列表",
-            "subTitle": "副标题",
-            "remark": "提示",
+            "id": "u:e163721f9bae",
+            "title": "漏洞列表",
             "body": [
                 {
                     "type": "crud",
-                    "id": "u:d08d56808c15",
+                    "id": "u:b529a11a4174",
                     "syncLocation": true,
                     "api": {
                         "method": "get",
-                        "url": "/api/artifacts"
+                        "url": "/api/vulnerabilities",
+                        "dataType": "json"
                     },
                     "columns": [
                         {
                             "name": "id",
                             "label": "ID",
                             "type": "text",
-                            "id": "u:30357bf93532"
+                            "id": "u:1ea2991a92b3"
                         },
                         {
-                            "name": "org",
-                            "label": "组织",
+                            "name": "cve",
+                            "label": "cve编号",
                             "type": "text",
-                            "id": "u:048b03f3dc41"
+                            "id": "u:edca5db403a3"
+                        },
+                        {
+                            "type": "text",
+                            "label": "cnnvd编号",
+                            "name": "cnnvd",
+                            "id": "u:e2a4c6303624"
+                        },
+                        {
+                            "type": "text",
+                            "label": "cwe编号",
+                            "name": "cwe",
+                            "id": "u:e2a4c6303624"
                         },
                         {
                             "type": "text",
                             "label": "名称",
                             "name": "name",
-                            "id": "u:d405c308b09f"
+                            "id": "u:71d4ee644305"
                         },
                         {
                             "type": "text",
-                            "label": "版本",
-                            "name": "version",
-                            "id": "u:cf87589f4505"
+                            "label": "等级",
+                            "name": "level",
+                            "id": "u:b58dde565ee5"
+                        },
+                        {
+                            "type": "text",
+                            "label": "利用难度",
+                            "name": "difficulty",
+                            "id": "u:f025bd6a6443"
                         },
                         {
                             "type": "date",
-                            "label": "发布日期",
-                            "name": "publishDate",
-                            "id": "u:2911198348cc"
+                            "label": "曝光日期",
+                            "name": "exposedDate",
+                            "id": "u:850e805df3d4"
                         },
                         {
                             "type": "text",
-                            "label": "来源",
-                            "name": "author",
-                            "id": "u:701f78f17c58"
-                        },
-                        {
-                            "type": "text",
-                            "label": "角色",
-                            "name": "role",
-                            "id": "u:693aecc3aa2f"
-                        },
-                        {
-                            "type": "text",
-                            "label": "简介",
+                            "label": "描述",
                             "name": "description",
-                            "id": "u:16d59c29ac66"
+                            "id": "u:45668c372d13"
+                        },
+                        {
+                            "type": "text",
+                            "label": "修复建议",
+                            "name": "suggestion",
+                            "id": "u:b56d5342a84d"
                         },
                         {
                             "type": "operation",
@@ -112,52 +123,62 @@
                                         "title": "编辑",
                                         "body": {
                                             "type": "form",
-                                            "api": "put:/api/artifacts",
+                                            "api": "put:/api/vulnerabilities",
                                             "body": [
                                                 {
-                                                    "label": "id",
                                                     "name": "id",
+                                                    "label": "ID",
                                                     "type": "static"
                                                 },
                                                 {
-                                                    "label": "组织",
-                                                    "name": "org",
+                                                    "name": "cve",
+                                                    "label": "cve编号",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "label": "cnnvd编号",
+                                                    "name": "cnnvd",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "name": "cwe",
+                                                    "label": "cwe编号",
                                                     "type": "static"
                                                 },
                                                 {
                                                     "label": "名称",
                                                     "name": "name",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "版本",
-                                                    "name": "version",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "发布日期",
-                                                    "name": "publishDate",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "来源",
-                                                    "name": "author",
                                                     "type": "input-text"
                                                 },
                                                 {
-                                                    "label": "角色",
-                                                    "name": "role",
+                                                    "label": "等级",
+                                                    "name": "level",
                                                     "type": "input-text"
                                                 },
                                                 {
-                                                    "label": "简介",
+                                                    "label": "利用难度",
+                                                    "name": "difficulty",
+                                                    "type": "input-text"
+                                                },
+                                                {
+                                                    "label": "曝光日期",
+                                                    "name": "exposedDate",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "label": "描述",
                                                     "name": "description",
+                                                    "type": "input-text"
+                                                },
+                                                {
+                                                    "label": "修复建议",
+                                                    "name": "suggestion",
                                                     "type": "input-text"
                                                 }
                                             ]
                                         }
                                     },
-                                    "id": "u:2a99f4f7000f"
+                                    "id": "u:82a00f0519f5"
                                 },
                                 {
                                     "label": "查看",
@@ -175,8 +196,18 @@
                                                     "type": "static"
                                                 },
                                                 {
-                                                    "name": "org",
-                                                    "label": "组织",
+                                                    "name": "cve",
+                                                    "label": "cve编号",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "label": "cnnvd编号",
+                                                    "name": "cnnvd",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "name": "cwe",
+                                                    "label": "cwe编号",
                                                     "type": "static"
                                                 },
                                                 {
@@ -185,34 +216,34 @@
                                                     "type": "static"
                                                 },
                                                 {
-                                                    "label": "版本",
-                                                    "name": "version",
+                                                    "label": "等级",
+                                                    "name": "level",
                                                     "type": "static"
                                                 },
                                                 {
-                                                    "label": "发布日期",
-                                                    "name": "publishDate",
+                                                    "label": "利用难度",
+                                                    "name": "difficulty",
                                                     "type": "static"
                                                 },
                                                 {
-                                                    "label": "来源",
-                                                    "name": "author",
+                                                    "label": "曝光日期",
+                                                    "name": "exposedDate",
                                                     "type": "static"
                                                 },
                                                 {
-                                                    "label": "角色",
-                                                    "name": "role",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "简介",
+                                                    "label": "描述",
                                                     "name": "description",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "label": "修复建议",
+                                                    "name": "suggestion",
                                                     "type": "static"
                                                 }
                                             ]
                                         }
                                     },
-                                    "id": "u:4f3d2f2992b6"
+                                    "id": "u:88b580e46689"
                                 },
                                 {
                                     "type": "button",
@@ -223,23 +254,25 @@
                                     "confirmText": "确定要删除？",
                                     "api": {
                                         "method": "delete",
-                                        "url": "/api/artifacts/${id}"
+                                        "url": "/api/vulnerabilities/${id}",
+                                        "dataType": "json"
                                     },
-                                    "id": "u:2daeb8129eec"
+                                    "id": "u:08f0bd83cdf2"
                                 }
                             ],
-                            "id": "u:5803a2f04b73"
+                            "id": "u:d5e4d5572d90"
                         }
                     ],
                     "bulkActions": [],
                     "itemActions": [],
                     "features": [
-                        "create",
-                        "filter",
                         "update",
                         "view",
-                        "delete"
+                        "delete",
+                        "create",
+                        "filter"
                     ],
+                    "filterColumnCount": 3,
                     "headerToolbar": [
                         {
                             "label": "新增",
@@ -252,13 +285,24 @@
                                     "type": "form",
                                     "api": {
                                         "method": "post",
-                                        "url": "/api/artifacts"
+                                        "url": "/api/vulnerabilities",
+                                        "dataType": "json"
                                     },
                                     "body": [
                                         {
                                             "type": "input-text",
-                                            "name": "org",
-                                            "label": "组织"
+                                            "name": "cve",
+                                            "label": "cve编号"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "cnnvd",
+                                            "label": "cnnvd编号"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "cwe",
+                                            "label": "cwe编号"
                                         },
                                         {
                                             "type": "input-text",
@@ -267,35 +311,42 @@
                                         },
                                         {
                                             "type": "input-text",
-                                            "name": "version",
-                                            "label": "版本"
+                                            "name": "level",
+                                            "label": "等级"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "difficulty",
+                                            "label": "利用难度"
                                         },
                                         {
                                             "type": "input-date",
-                                            "name": "publishDate",
-                                            "label": "发布日期"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "author",
-                                            "label": "来源"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "role",
-                                            "label": "角色"
+                                            "name": "exposedDate",
+                                            "label": "曝光日期"
                                         },
                                         {
                                             "type": "input-text",
                                             "name": "description",
-                                            "label": "简介"
+                                            "label": "描述"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "suggestion",
+                                            "label": "修复建议"
                                         }
                                     ]
                                 }
                             },
-                            "id": "u:82bc140f194e"
+                            "id": "u:aa37c5672282"
                         },
-                        "bulkActions"
+                        {
+                            "type": "bulk-actions"
+                        },
+                        {
+                            "type": "filter-toggler",
+                            "tpl": "内容",
+                            "id": "u:becef8ecace0"
+                        }
                     ],
                     "messages": {},
                     "perPageField": "pageSize",
@@ -306,11 +357,25 @@
                             {
                                 "type": "input-text",
                                 "name": "name",
-                                "label": "name",
-                                "id": "u:773f1c15a9f2"
+                                "label": "name"
+                            },
+                            {
+                                "type": "input-text",
+                                "name": "cve",
+                                "label": "cve编号"
+                            },
+                            {
+                                "type": "input-text",
+                                "name": "cnnvd",
+                                "label": "cnnvd编号"
+                            },
+                            {
+                                "type": "input-text",
+                                "name": "cwe",
+                                "label": "cwe编号"
                             }
                         ],
-                        "id": "u:1d2a1be29e51"
+                        "id": "u:5bee98c8a62e"
                     }
                 }
             ],
@@ -382,10 +447,9 @@
                     ],
                     "id": "u:6905cecb9b98"
                 }
-            ],
-            "messages": {},
-            "pullRefresh": {}
+            ]
         };
+
         let amisScoped = amis.embed(
             '#root',
             amisJSON,

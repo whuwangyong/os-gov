@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8"/>
+    <title>开源治理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="icon" href="favicon-32x32.png">
+    <link rel="stylesheet" href="sdk/sdk.css"/>
+    <link rel="stylesheet" href="sdk/helper.css"/>
+    <link rel="stylesheet" href="sdk/iconfont.css"/>
+    <!-- 这是默认主题所需的，如果是其他主题则不需要 -->
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="root" class="app-wrapper"></div>
+<script src="sdk/sdk.js"></script>
+<script type="text/javascript">
+    (function () {
+        let amis = amisRequire('amis/embed');
+        // 通过替换下面这个配置来生成不同页面
+        let amisJSON = {
+            "type": "page",
+            "title": "总览",
+            "body": "制品数；漏洞数；百分比；标签云等等",
+            "aside": [
+                {
+                    "type": "nav",
+                    "stacked": true,
+                    "links": [
+                        {
+                            "label": "总览",
+                            "to": "/index.html"
+                        },
+                        {
+                            "label": "基础信息管理",
+                            "to": "/artifacts.html",
+                            "children": [
+                                {
+                                    "label": "制品",
+                                    "to": "/artifacts.html"
+                                },
+                                {
+                                    "label": "漏洞",
+                                    "to": "/vulnerabilities.html"
+                                },
+                                {
+                                    "label": "协议",
+                                    "to": "licenses.html"
+                                },
+                                {
+                                    "label": "标签",
+                                    "to": "tags.html"
+                                },
+                                {
+                                    "label": "应用",
+                                    "to": "apps.html"
+                                },
+                                {
+                                    "label": "主机",
+                                    "to": "hosts.html"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "关联关系维护",
+                            "to": "/artifacts-vulnerabilities.html",
+                            "children": [
+                                {
+                                    "label": "制品-漏洞",
+                                    "to": "/artifacts-vulnerabilities.html"
+                                },
+                                {
+                                    "label": "制品-协议",
+                                    "to": "/artifacts-licenses.html"
+                                },
+                                {
+                                    "label": "制品-标签",
+                                    "to": "/artifacts-tags.html"
+                                },
+                                {
+                                    "label": "制品-应用",
+                                    "to": "/artifacts-apps.html"
+                                },
+                                {
+                                    "label": "应用-主机",
+                                    "to": "apps-hosts.html"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "messages": {},
+            "pullRefresh": {}
+        };
+        let amisScoped = amis.embed(
+            '#root',
+            amisJSON,
+            {},
+            {}
+        );
+    })();
+</script>
+</body>
+</html>
