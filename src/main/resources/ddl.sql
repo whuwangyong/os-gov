@@ -44,9 +44,9 @@ CREATE TABLE artifact_tag
 
 CREATE TABLE license
 (
-    id   int                    NOT NULL AUTO_INCREMENT,
-    name varchar(255)           NOT NULL,
-    risk enum ('0','1','2','3') NOT NULL,
+    id   int          NOT NULL AUTO_INCREMENT,
+    name varchar(255) NOT NULL,
+    risk tinyint      NOT NULL,
     PRIMARY KEY (id),
     UNIQUE INDEX uidx_name (name)
 ) ENGINE = InnoDB
@@ -68,14 +68,14 @@ CREATE TABLE artifact_license
 
 CREATE TABLE vulnerability
 (
-    id           int                    NOT NULL AUTO_INCREMENT,
-    cve          varchar(50)            NULL,
-    cnnvd        varchar(50)            NULL,
-    cwe          varchar(50)            NULL,
-    name         varchar(255)           NOT NULL,
-    level        enum ('0','1','2','3') NOT NULL DEFAULT '3',
-    difficulty   enum ('0','1','2','3') NOT NULL DEFAULT '3',
-    exposed_date date                   NOT NULL,
+    id           int          NOT NULL AUTO_INCREMENT,
+    cve          varchar(50)  NULL,
+    cnnvd        varchar(50)  NULL,
+    cwe          varchar(50)  NULL,
+    name         varchar(255) NOT NULL,
+    level        tinyint      NOT NULL DEFAULT 3,
+    difficulty   tinyint      NOT NULL DEFAULT 3,
+    exposed_date date         NOT NULL,
     description  varchar(2000),
     suggestion   varchar(2000),
     PRIMARY KEY (id),
@@ -129,10 +129,11 @@ CREATE TABLE artifact_app
 CREATE TABLE host
 (
     id       int                             NOT NULL AUTO_INCREMENT,
-    ip       int UNSIGNED                    NOT NULL,
+    ip       varchar(15)                     NOT NULL,
     hardware enum ('物理机','虚拟机','容器') NOT NULL,
     network  enum ('生产','办公','开发')     NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    INDEX idx_ip (ip)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 

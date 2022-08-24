@@ -49,8 +49,8 @@ public class ArtifactRepositoryTest {
                             .name("component-" + i)
                             .version("0." + i)
                             .publishDate(LocalDate.now())
-                            .author(Author.OpenSource)
-                            .role(Role.Component)
+                            .author(Author.OpenSource.getValue())
+                            .role(Role.Component.getValue())
                             .build()
             );
         }

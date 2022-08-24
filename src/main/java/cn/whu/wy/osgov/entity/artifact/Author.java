@@ -18,13 +18,13 @@ public enum Author {
     XinChuang("信创");
 
 
-    final String vaule;
+    final String value;
 
-    Author(String vaule) {
-        this.vaule = vaule;
+    Author(String value) {
+        this.value = value;
     }
 
-    public String getVaule() {
-        return vaule;
+    public String getValue() {
+        return value;
     }
 }

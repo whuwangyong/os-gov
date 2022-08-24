@@ -26,10 +26,11 @@ public class Artifact extends Entity implements VersionSortable {
 
     private LocalDate publishDate;
 
-    // 来源
-    private Author author;
+    // 制品来源
+    private String author;
 
-    private Role role;
+    // 制品在系统中扮演的角色
+    private String role;
 
     private String description;
 
