@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * Date 2022/05/06
  * Time 16:25
  */
-public class Helper {
+public class ClassUtils {
 
     /**
      * 属性拷贝
@@ -44,6 +44,10 @@ public class Helper {
                 .toArray(String[]::new);
     }
 
+    /**
+     * 通过反射方式，获取一个对象的所有属性
+     * 返回一个map，key=属性名，value=属性值
+     */
     public static Map<String, Object> getFieldsValue(Object o) {
         Map<String, Object> map = new HashMap<>();
         Class<?> aClass = o.getClass();

@@ -2,7 +2,8 @@ package cn.whu.wy.osgov.repository;
 
 import cn.whu.wy.osgov.entity.Entity;
 import cn.whu.wy.osgov.exception.NotFundException;
-import cn.whu.wy.osgov.utils.Helper;
+import cn.whu.wy.osgov.utils.ClassUtils;
+import cn.whu.wy.osgov.utils.StringUtils;
 import com.google.common.base.CaseFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author WangYong
@@ -50,16 +52,41 @@ public abstract class BaseRepository<T extends Entity> {
     public int add(T t) {
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(t);
         Number number = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource);
-        log.info("add: {}, return key={}", t, number);
+//        log.info("add: {}, return key={}", t, number);
         return number.intValue();
     }
 
+    /**
+     * 批量新增记录
+     */
     public int[] add(List<T> tList) {
+        if (tList.size() == 0) {
+            return new int[]{0};
+        }
+        // 将列表转为sqlParameterSources
         List<BeanPropertySqlParameterSource> list = new ArrayList<>();
         tList.forEach(t -> list.add(new BeanPropertySqlParameterSource(t)));
         BeanPropertySqlParameterSource[] sqlParameterSources = list.toArray(new BeanPropertySqlParameterSource[0]);
-        // TODO
-        String sql = "";
+
+        // 拼装sql，目标是：INSERT INTO t(col1,col2,col3) VALUES (:field1,:field2,:field3)
+        StringBuilder sb = new StringBuilder("INSERT INTO " + tableName() + "(");
+        Map<String, Object> fieldsValue = ClassUtils.getFieldsValue(tList.get(0));
+        // id是自增的，不拼到sql里面
+        List<String> fields = fieldsValue.keySet().stream().filter(e -> !e.equals("id")).collect(Collectors.toList());
+        // 拼列名
+        fields.forEach(filed -> {
+            String column = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, filed);
+            sb.append(column).append(",");
+        });
+        StringUtils.deleteLastChars(sb, ",");
+        sb.append(") VALUES (");
+        // 拼namedParameters
+        fields.forEach(filed -> sb.append(":").append(filed).append(","));
+        StringUtils.deleteLastChars(sb, ",");
+        sb.append(")");
+
+        String sql = sb.toString();
+        log.info("batch add, sql={}", sql);
         return npJdbcTemplate.batchUpdate(sql, sqlParameterSources);
     }
 
@@ -118,8 +145,8 @@ public abstract class BaseRepository<T extends Entity> {
     public List<T> query(Map<String, String> params) {
         StringBuilder sb = new StringBuilder("select * from " + tableName() + " where ");
         params.forEach((k, v) -> sb.append(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, k)).append(" like '%").append(v).append("%' or "));
-        // 删除末尾多余的' or '
-        sb.delete(sb.length() - 4, sb.length());
+        // 删除末尾多余的" or "
+        StringUtils.deleteLastChars(sb, " or ");
 
         String sql = sb.toString();
         log.info("query: params={}, sql={}", params, sql);
@@ -141,18 +168,15 @@ public abstract class BaseRepository<T extends Entity> {
      * 注意：没有检查传入对象是否包含空字段。
      * 1. 可以由数据库进行约束
      * 2. 与前端约定，必须传入完成的对象，未改动的字段也必须一起传过来
-     *
-     * @param t
-     * @return
      */
     public int update(T t) {
         if (findById(t.getId()) != null) {
             StringBuilder sb = new StringBuilder("update " + tableName() + " set ");
-            Map<String, Object> fieldsValue = Helper.getFieldsValue(t);
+            Map<String, Object> fieldsValue = ClassUtils.getFieldsValue(t);
             fieldsValue.forEach((k, v) -> sb.append(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, k))
                     .append("='").append(v).append("', "));
             // 删掉末尾多余的', '
-            sb.delete(sb.length() - 2, sb.length());
+            StringUtils.deleteLastChars(sb, ", ");
             sb.append(" where id=").append(t.getId());
             String sql = sb.toString();
             log.info("update: sql={}", sql);
