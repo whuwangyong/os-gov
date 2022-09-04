@@ -26,6 +26,7 @@ import java.util.Map;
  * // 如果无法知道数据总数，只能知道是否有下一页，请返回如下格式，amis 会简单生成一个简单版本的分页控件。
  * "hasNext": true // 是否有下一页。
  * }
+ * // 如果不需要分页，或者配置了 loadDataOnce 则可以忽略掉 total 和 hasNext 参数。
  * }
  * status: 返回 0，表示当前接口正确返回，否则按错误请求处理；
  * msg: 返回接口处理信息，主要用于表单提交或请求失败时的 toast 显示；
@@ -87,7 +88,7 @@ public class ResponseEntity implements Serializable {
     }
 
     /**
-     * 返回多条记录，包装到items里面。不分页。用于返回查询结果
+     * 返回多条记录，包装到items里面，不分页
      *
      * @param items
      * @param <T>
@@ -121,7 +122,7 @@ public class ResponseEntity implements Serializable {
      * @param <T>
      * @return
      */
-    public <T> ResponseEntity success(List<T> items, boolean hasNext) {
+    public static <T> ResponseEntity success(List<T> items, boolean hasNext) {
         ResponseEntity response = new ResponseEntity(ResponseCode.SUCCESS);
         response.setData(Map.of(DATA_KEY_ITEMS, items, DATA_KEY_HAS_NEXT, hasNext));
         return response;

@@ -9,7 +9,6 @@
             content="width=device-width, initial-scale=1, maximum-scale=1"
     />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="sdk/sdk.css"/>
     <link rel="stylesheet" href="sdk/helper.css"/>
     <link rel="stylesheet" href="sdk/iconfont.css"/>
@@ -38,8 +37,44 @@
         // 通过替换下面这个配置来生成不同页面
         let amisJSON = {
             "type": "page",
-            "title": "总览",
-            "body": "制品数；漏洞数；百分比；标签云等等",
+            "title": "制品漏洞",
+            "subTitle": "制品漏洞",
+            "remark": "暂无提示",
+            "body": [
+                {
+                    "type": "crud",
+                    "syncLocation": true,
+                    "loadDataOnce": true,
+                    // "autoGenerateFilter": true,
+                    // "alwaysShowPagination": true,
+                    "footerToolbar": [
+                        "statistics",
+                        "switch-per-page",
+                        "pagination"
+                    ],
+                    "api": {
+                        "method": "get",
+                        "url": "/api/artifacts-vulnerabilities",
+                        "dataType": "json"
+                    },
+                    "columns": [
+                        {
+                            "name": "artifactName",
+                            "label": "制品名称",
+                            "type": "text",
+                            "searchable": true
+                        },
+                        {
+                            "name": "vulnerabilityName",
+                            "type": "text",
+                            "label": "漏洞名称",
+                            "searchable": true
+                        }
+                    ],
+                    "perPage": 20,
+                    "perPageAvailable": [10, 20, 50, 100, 200]
+                }
+            ],
             "aside": [
                 {
                     "type": "nav",

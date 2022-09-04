@@ -137,19 +137,24 @@ public abstract class BaseRepository<T extends Entity> {
     }
 
     /**
-     * 根据条件模糊查询。不支持分页
+     * 根据条件模糊查询。不支持分页，多个条件之间使用and
      *
      * @param params
      * @return
      */
     public List<T> query(Map<String, String> params) {
         StringBuilder sb = new StringBuilder("select * from " + tableName() + " where ");
-        params.forEach((k, v) -> sb.append(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, k)).append(" like '%").append(v).append("%' or "));
-        // 删除末尾多余的" or "
-        StringUtils.deleteLastChars(sb, " or ");
+        params.forEach((k, v) -> sb.append(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, k)).append(" like '%").append(v).append("%' and "));
+        // 删除末尾多余的" and "
+        StringUtils.deleteLastChars(sb, " and ");
 
         String sql = sb.toString();
         log.info("query: params={}, sql={}", params, sql);
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public List<T> query(String key, String value) {
+        String sql = "select * from " + tableName() + " where " + key + " like %" + value + "%";
         return jdbcTemplate.query(sql, rowMapper);
     }
 

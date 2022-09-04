@@ -18,6 +18,7 @@
 > - 联合索引：uidx: (org, name, version)，简称onv（之所以不叫gav是因为这里面不仅仅是maven仓库的组件）。
 > - 关于md5 char(32)：可能存在gnv相同，但实际是不同版本的组件的情况。md5用于解决该问题。但是，这种不合规的组件，就不应该引入，它打破了gnv的唯一索引约束。
 >
+
 | 字段         | 名称         | 类型                              | 约束                  | 备注                           |
 | ------------ | ------------ | --------------------------------- | --------------------- | ------------------------------ |
 | id           | 自增id       | int                               | pk                    |                                |
@@ -79,7 +80,7 @@
 | ----------- | -------- | ---- | --------- | ---- |
 | id          | 自增id   | int  | pk        |      |
 | name | 协议名 | varchar(100) | uidx |      |
-| risk | 风险等级 | enum(0,1,2,3) | 高传染，中，低，无 | |
+| risk | 风险等级 | tinyint | enum(0,1,2,3) not null | 高传染，中，低，无 |
 
 ### 制品协议表(artifact_license)
 
@@ -95,18 +96,18 @@
 >
 > 危险系数 = 风险等级 * 利用难度，取值范围为`[0,3] * [0, 3]`，值越小，越危险。最小值为0，与0 day的含义一致。
 
-| 字段         | 字段名称 | 类型          | 约束 | 备注                   |
-| ------------ | -------- | ------------- | ---- | ---------------------- |
-| id           | 自增id   | int           | pk   |                        |
-| cve          | 漏洞编号 | varchar(50)   | uidx |                        |
-| cnnvd        | 漏洞编号 | varchar(50)   | uidx |                        |
-| cwe          | 漏洞编号 | varchar(50)   | uidx |                        |
-| name         | 漏洞名称 | varchar(255)  | idx  |                        |
-| level        | 风险等级 | enum(0,1,2,3) |      | 严重，高危，中危，低危 |
-| difficulty   | 利用难度 | enum(0,1,2,3) |      | 容易，一般，困难，未知 |
-| exposed_date | 曝光日期 | date          |      |                        |
-| description  | 简介     | varchar(2000) |      |                        |
-| suggestion   | 修复建议 | varchar(2000) |      |                        |
+| 字段         | 字段名称 | 类型          | 约束                             | 备注                   |
+| ------------ | -------- | ------------- | -------------------------------- | ---------------------- |
+| id           | 自增id   | int           | pk                               |                        |
+| cve          | 漏洞编号 | varchar(50)   | uidx                             |                        |
+| cnnvd        | 漏洞编号 | varchar(50)   | uidx                             |                        |
+| cwe          | 漏洞编号 | varchar(50)   | uidx                             |                        |
+| name         | 漏洞名称 | varchar(255)  | idx                              |                        |
+| level        | 风险等级 | tinyint       | enum(0,1,2,3) not null default 3 | 严重，高危，中危，低危 |
+| difficulty   | 利用难度 | tinyint       | enum(0,1,2,3) not null default 3 | 容易，一般，困难，未知 |
+| exposed_date | 曝光日期 | date          |                                  |                        |
+| description  | 简介     | varchar(2000) |                                  |                        |
+| suggestion   | 修复建议 | varchar(2000) |                                  |                        |
 
 ### 制品漏洞表(artifact_vulnerability)
 
@@ -174,22 +175,106 @@
 | app_id  | 应用id   | int     | idx，外键 |      |
 | host_id | 主机id   | int     | idx，外键 |      |
 
-
 ## 领域
 
-### 根据组件名称查询漏洞信息
+### 关联表如何查询——以根据制品名称查询漏洞信息为例
 
-1. 输入名称，模糊查询，返回匹配的组件列表
-2. 用户选定一个组件，查看该组件的漏洞信息
-3. 根据`component_id`查询`component_vulnerability`，返回漏洞id列表
-4. 根据`vulnerability_id`查询漏洞表，获取漏洞详情列表
+输入：制品名称
 
-```sql
-select vulnerability_id from component_vulnerability where component_id=xxx;
-select * from vulnerability where vulnerability_id=xxx;
+输出：`List<ArtifactVulnerabilityDto>`
+
+```java
+public class ArtifactVulnerabilityDto {
+    private int artifactId;
+    private String artifactName;
+    private int vulnerabilityId;
+    private String vulnerabilityName;
+}
 ```
 
+支持模糊查询，可能返回多条记录。
+
+#### 方案1 组合多个repository
+
+- 根据制品名称模糊查询制品表，返回一堆制品id
+- 根据每个制品id，查制品漏洞表，返回一堆（制品id, 漏洞id）
+- 根据每个漏洞id，查漏洞表，获取漏洞名称
+- 组装结果对象
+
+每张表都有一个可以CRUD的repository。利用这些repository，实现上述功能的代码为：
+
+```java
+
+@Service
+public class ArtifactVulnerabilityService {
+
+  public List<ArtifactVulnerabilityDto> queryByArtifactName2(String keyword) {
+    List<ArtifactVulnerabilityDto> dtos = new ArrayList<>();
+
+    List<Artifact> artifacts = artifactRepository.query("name", keyword);
+    artifacts.forEach(a -> {
+      List<ArtifactVulnerability> avList = artifactVulnerabilityRepository.query("artifact_id", String.valueOf(a.getId()));
+      avList.forEach(av -> {
+        Vulnerability v = vulnerabilityRepository.findById(av.getId());
+        dtos.add(ArtifactVulnerabilityDto.builder()
+                .artifactId(a.getId())
+                .artifactName(a.getName())
+                .vulnerabilityId(v.getId())
+                .vulnerabilityName(v.getName())
+                .build());
+      });
+    });
+    return dtos;
+  }
+}
+```
+
+可见上述代码查了3次库。
+
+**结论**：这种组合多个repository实现多表查询的方案，代码复杂，数据库网络开销较大。
+
+#### 方案2 改表结构
+
+在artifact_vulnerability表新增artifact_name和vulnerability_name两个字段。
+
+**结论**：这属于开倒车。从范式来说，拆开他们目的就是为了不在数据库存重复数据。如，两个地方都存了制品名，修改制品表的时候，还要记得修改制品漏洞表。这简直是灾难。再者，如果还需要漏洞表里面的漏洞等级，难道把等级字段也合入这个表吗？
+
+#### 方案3 裸写SQL关联查询
+
+```java
+@Service
+public class ArtifactVulnerabilityService {
+    
+    public List<ArtifactVulnerabilityDto> queryByArtifactName(String keyword) {
+		String sql = "SELECT a.id AS artifact_id, a.name AS artifact_name, v.id AS vulnerability_id, v.name AS vulnerability_name " +
+                    "FROM artifact AS a, vulnerability AS v, artifact_vulnerability AS av " +
+                    "WHERE a.id = av.artifact_id AND v.id = av.vulnerability_id AND a.name LIKE '%" + keyword + "%'";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtifactVulnerabilityDto.class));
+	}
+}
+```
+
+别看不起SQL，这段SQL，它就是该业务的领域知识。比代码还直观。
+
 ## 架构设计
+
+### 包
+
+- advice：统一异常处理
+- bean：一些pojo
+- controller/anemic：贫血控制器，直接使用repository，单表增删改查
+- controller/domain：领域控制器，使用service
+- dto
+  - response：通用响应对象，可以直接包装entity，也可以包装复合的dto对象
+  - 复合的dto对象，与页面需要的内容有关，可能由多表的某些字段组合而成。service的返回对象
+- entity：与表字段一一对应
+- exception：自定义异常
+- repository：操作表，使用entity，与表一一对应
+  - 是否提供多表操作的复杂sql？这样的话，service层就简单一些。
+- service：领域模型的各个服务，使用repository。返回dto
+- utils：工具类
+
+### 类
 
 - `class Entity`，仅有id字段。所有的表都继承该类
 - `class BaseRepository<T extends Entity>`，实现通用的增删改查
@@ -204,20 +289,71 @@ API。因为几乎没有业务逻辑，所以controller直接使用repository，
 
 controller/domain目录下为领域模型。这里的操作涉及到多表，有丰富的业务逻辑，需要将领域模型封装到对应的service层。
 
+## 功能设计
+
+### 数据导入
+
+1. 单表都应该支持excel导入，新增按钮只是偶尔用一下。不可能通过按钮逐条录入数据
+2. 关联表也应该支持excel导入，关联表是子表，应该在主表导入之后在导入。关联表里面的内容怎么来的？手工录入，或从其他地方导出，并经过代码加工
+3. 所有的表都应该支持excel导出，便于分享
+4. 支持从maven仓库导入制品
+5. 支持从360开源卫士导入漏洞
+6. 主表数据导入后，自动建立子表的关联关系
+
+### 制品推荐
+
+1. 上传组件清单，批量确认组件是否在库中、推荐使用版本
+2.
+
 ## 页面设计
 
-侧边栏
+### 侧边栏
 
-- 基础信息维护（admin可修改，test可查看）
+- 基础信息维护（admin用户可增删改，developer用户可查看）
   - 制品
   - 漏洞
   - 协议
   - 标签
   - 应用
   - 主机
-- 关联关系维护
+- 关联关系维护（表格里显示两个实体的关键类，操作栏提供查看详情。弹框后显示完整信息）
   - 制品-漏洞
   - 制品-协议
   - 制品-标签
   - 制品-应用
   - 应用-主机
+
+## 用户手册
+
+1. 主页，查看总的组件数、漏洞数、趋势、图表等等
+2. 各个功能页，普遍用户可以查，管理员可以增删改
+3.
+
+## 开发笔记
+
+- [x] 接下来，为关联表造数据
+
+- [x] 写领域service
+
+- [ ] 封装dto
+
+- [ ] REST API 不能与amis特有的接口要求绑定，如items、total等。但是他这个三段式设计也还行：
+
+  ```java
+  int status;
+  String msg;
+  Map<String, Object> data;
+  ```
+
+  我之前Inspector的设计为：
+
+  ```java
+  String time = LocalDateTime.now().toString(); // 每次响应的时间
+  String code = STATUS.OK;
+  Object tips; // 一些附加的提示信息，如错误、异常等
+  Object body; // 响应体
+  ```
+
+  amis的设计，相当于是把附加信息+body+其他的东西放到Map里了。
+
+- [x] 准确的泛型非常有用。当不小心写错了类型时，在调用方法时，会提示错误，传入的类型不对

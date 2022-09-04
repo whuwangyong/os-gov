@@ -1,6 +1,6 @@
 package cn.whu.wy.osgov.repository;
 
-import cn.whu.wy.osgov.entity.ArtifactLicense;
+import cn.whu.wy.osgov.entity.ArtifactTag;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -11,14 +11,14 @@ import javax.sql.DataSource;
  * Time 19:50
  */
 @Repository
-public class ArtifactTagRepository extends BaseRepository<ArtifactLicense> {
+public class ArtifactTagRepository extends BaseRepository<ArtifactTag> {
 
     public ArtifactTagRepository(DataSource dataSource) {
-        super(dataSource, ArtifactLicense.class);
+        super(dataSource, ArtifactTag.class);
     }
 
     @Override
     String tableName() {
-        return "artifact_license";
+        return "artifact_tag";
     }
 }

@@ -22,10 +22,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author WangYong
@@ -57,12 +54,12 @@ public class RepositoryTest {
 
     Random random = new Random(47);
 
-    final int apps = 308;
-    final int artifacts = 1234;
-    final int hosts = 251;
-    final int licenses = 116;
-    final int tags = 69;
-    final int vulnerabilities = 745;
+    final int appNum = 308;
+    final int artifactNum = 1234;
+    final int hostNum = 251;
+    final int licenseNum = 116;
+    final int tagNum = 69;
+    final int vulnerabilityNum = 745;
 
     @Autowired
     public RepositoryTest(AppRepository appRepository, ArtifactRepository artifactRepository,
@@ -102,14 +99,17 @@ public class RepositoryTest {
         ScriptUtils.executeSqlScript(dataSource.getConnection(), encodedResource);
     }
 
+    // 使用单挑
     @Test
     @Order(1)
     public void insertApp() {
         log.info("insertApp");
         String[] envs = {"生产", "测试"};
-        for (int i = 0; i < apps; i++) {
-            appRepository.add(new App("测试应用" + i, envs[random.nextInt(envs.length)]));
+        List<App> appList = new ArrayList<>(appNum);
+        for (int i = 1; i <= appNum; i++) {
+            appList.add(new App("测试应用" + i, envs[random.nextInt(envs.length)]));
         }
+        appRepository.add(appList);
     }
 
     @Test
@@ -118,8 +118,9 @@ public class RepositoryTest {
         log.info("insertArtifact");
         String[] authors = {Author.Independent.getValue(), Author.OpenSource.getValue(), Author.Commercial.getValue(), Author.XinChuang.getValue()};
         String[] roles = {Role.Component.getValue(), Role.Software.getValue(), Role.Tool.getValue(), Role.NA.getValue()};
-        for (int i = 1; i <= artifacts; i++) {
-            artifactRepository.add(
+        List<Artifact> artifactList = new ArrayList<>(artifactNum);
+        for (int i = 1; i <= artifactNum; i++) {
+            artifactList.add(
                     Artifact.builder()
                             .org("org.test" + i % 10)
                             .name("component-" + i)
@@ -131,6 +132,7 @@ public class RepositoryTest {
                             .build()
             );
         }
+        artifactRepository.add(artifactList);
     }
 
     @Test
@@ -139,9 +141,11 @@ public class RepositoryTest {
         log.info("insertHost");
         String[] hardwares = {"物理机", "虚拟机", "容器"};
         String[] networks = {"生产", "办公", "开发"};
-        for (int i = 0; i < hosts; i++) {
-            hostRepository.add(new Host("192.168.0." + i, hardwares[random.nextInt(hardwares.length)], networks[random.nextInt(networks.length)]));
+        List<Host> hostList = new ArrayList<>(hostNum);
+        for (int i = 1; i <= hostNum; i++) {
+            hostList.add(new Host("192.168.0." + i, hardwares[random.nextInt(hardwares.length)], networks[random.nextInt(networks.length)]));
         }
+        hostRepository.add(hostList);
     }
 
     @Test
@@ -149,17 +153,19 @@ public class RepositoryTest {
     public void insertLicense() {
         log.info("insertLicense");
         byte[] risks = {0, 1, 2, 3};
-        for (int i = 0; i < licenses; i++) {
-            licenseRepository.add(new License("test-license-" + i, risks[random.nextInt(risks.length)]));
+        List<License> licenseList = new ArrayList<>(licenseNum);
+        for (int i = 1; i <= licenseNum; i++) {
+            licenseList.add(new License("test-license-" + i, risks[random.nextInt(risks.length)]));
 
         }
+        licenseRepository.add(licenseList);
     }
 
     @Test
     @Order(5)
     public void insertTag() {
         log.info("insertTag");
-        for (int i = 0; i < tags; i++) {
+        for (int i = 1; i <= tagNum; i++) {
             tagRepository.add(new Tag("test-tag-" + i));
         }
     }
@@ -170,8 +176,9 @@ public class RepositoryTest {
         log.info("insertVulnerability");
         byte[] level = {0, 1, 2, 3};
         byte[] difficulty = {0, 1, 2, 3};
-        for (int i = 0; i < vulnerabilities; i++) {
-            vulnerabilityRepository.add(Vulnerability.builder()
+        List<Vulnerability> vulnerabilityList = new ArrayList<>(vulnerabilityNum);
+        for (int i = 1; i <= vulnerabilityNum; i++) {
+            vulnerabilityList.add(Vulnerability.builder()
                     .cnnvd("cnnvd" + i)
                     .cve("cve" + i)
                     .cwe("cwe" + i)
@@ -183,8 +190,74 @@ public class RepositoryTest {
                     .suggestion("升级")
                     .build());
         }
+        vulnerabilityRepository.add(vulnerabilityList);
+    }
+
+    @Test
+    @Order(7)
+    public void insertAppHost() {
+        List<AppHost> appHosts = new ArrayList<>();
+        for (int appId = 1; appId <= appNum; appId++) {
+            // 将app随机部署到一个host上
+            int hostId = random.nextInt(hostNum) + 1;
+            appHosts.add(new AppHost(appId, hostId));
+        }
+        appHostRepository.add(appHosts);
+    }
+
+    @Test
+    @Order(8)
+    public void insertArtifactApp() {
+        List<ArtifactApp> artifactApps = new ArrayList<>();
+        for (int artifactId = 1; artifactId <= artifactNum; artifactId++) {
+            // 将artifact随机安排到一个app里
+            int appId = random.nextInt(appNum) + 1;
+            artifactApps.add(new ArtifactApp(artifactId, appId, false, false));
+        }
+        artifactAppRepository.add(artifactApps);
+    }
+
+    @Test
+    @Order(9)
+    public void insertArtifactLicense() {
+        List<ArtifactLicense> artifactLicenses = new ArrayList<>();
+        for (int artifactId = 1; artifactId <= artifactNum; artifactId++) {
+            // 给artifact随机安排一个license
+            int licenseId = random.nextInt(licenseNum) + 1;
+            artifactLicenses.add(new ArtifactLicense(artifactId, licenseId));
+        }
+        artifactLicenseRepository.add(artifactLicenses);
+    }
+
+    @Test
+    @Order(10)
+    public void insertArtifactTag() {
+        List<ArtifactTag> artifactTags = new ArrayList<>();
+        for (int artifactId = 1; artifactId <= artifactNum; artifactId++) {
+            // 给artifact随机安排一个tag
+            int tagId = random.nextInt(tagNum) + 1;
+            artifactTags.add(new ArtifactTag(artifactId, tagId));
+        }
+        artifactTagRepository.add(artifactTags);
+    }
+
+    @Test
+    @Order(11)
+    public void insertArtifactVulnerability() {
+        Set<ArtifactVulnerability> artifactVulnerabilities = new HashSet<>();
+        for (int artifactId = 1; artifactId <= artifactNum; artifactId++) {
+            // 被3或4整除的加1个漏洞
+            if (artifactId % 3 == 0 || artifactId % 4 == 0) {
+                artifactVulnerabilities.add(new ArtifactVulnerability(artifactId, random.nextInt(vulnerabilityNum) + 1));
+            }
+            // 被7整除再加2个漏洞
+            if (artifactId % 7 == 0) {
+                artifactVulnerabilities.add(new ArtifactVulnerability(artifactId, random.nextInt(vulnerabilityNum) + 1));
+                artifactVulnerabilities.add(new ArtifactVulnerability(artifactId, random.nextInt(vulnerabilityNum) + 1));
+            }
+        }
+        artifactVulnerabilityRepository.add(new ArrayList<>(artifactVulnerabilities));
     }
 
 
-    }
 }
