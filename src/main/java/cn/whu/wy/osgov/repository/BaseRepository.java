@@ -153,8 +153,13 @@ public abstract class BaseRepository<T extends Entity> {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public List<T> query(String key, String value) {
-        String sql = "select * from " + tableName() + " where " + key + " like %" + value + "%";
+    public List<T> queryLike(String key, String value) {
+        String sql = "select * from " + tableName() + " where " + key + " like '%" + value + "%'";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public List<T> queryEqual(String key, String value) {
+        String sql = String.format("select * from %s where %s = '%s'", tableName(), key, value);
         return jdbcTemplate.query(sql, rowMapper);
     }
 
