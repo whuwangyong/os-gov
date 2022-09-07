@@ -8,7 +8,7 @@ import lombok.Data;
  * Time 20:36
  */
 @Data
-public class ArtifactRisk {
+public class ArtifactRiskDto {
     private int artifactId;
     private String artifactOrg;
     private String artifactName;

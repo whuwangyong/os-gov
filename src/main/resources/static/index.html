@@ -39,15 +39,265 @@
         let amisJSON = {
             "type": "page",
             "title": "总览",
-            "body": "制品数；漏洞数；百分比；标签云等等",
+            "initApi": {
+                "method": "get",
+                "url": "/api/state",
+                "dataType": "json"
+            },
+            "body": [
+                {
+                    "type": "grid",
+                    "columns": [
+                        {
+                            "type": "panel",
+                            "title": "开源治理健康度",
+                            "className": "Panel--primary",
+                            "body": {
+                                "type": "chart",
+                                "config": {
+                                    series: [
+                                        {
+                                            type: 'gauge',
+                                            startAngle: 180,
+                                            endAngle: 0,
+                                            min: 0,
+                                            max: 1,
+                                            splitNumber: 8,
+                                            axisLine: { // 圆弧
+                                                lineStyle: {
+                                                    width: 5,
+                                                    color: [
+                                                        [0.25, '#FF6E76'],
+                                                        [0.5, '#FDDD60'],
+                                                        [0.75, '#58D9F9'],
+                                                        [1, '#7CFFB2']
+                                                    ]
+                                                }
+                                            },
+                                            pointer: {
+                                                icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+                                                length: '12%',
+                                                width: 10,
+                                                offsetCenter: [0, '-55%'],
+                                                itemStyle: {
+                                                    color: 'auto'
+                                                }
+                                            },
+                                            axisTick: { // 小刻度
+                                                length: 12,
+                                                lineStyle: {
+                                                    color: 'auto',
+                                                    width: 2
+                                                }
+                                            },
+                                            splitLine: { // 大刻度
+                                                length: 20,
+                                                lineStyle: {
+                                                    color: 'auto',
+                                                    width: 3
+                                                }
+                                            },
+                                            axisLabel: {
+                                                color: '#464646',
+                                                fontSize: 20,
+                                                distance: -70,
+                                                formatter: function (value) {
+                                                    if (value === 0.875) {
+                                                        return '优秀';
+                                                    } else if (value === 0.625) {
+                                                        return '良好';
+                                                    } else if (value === 0.375) {
+                                                        return '一般';
+                                                    } else if (value === 0.125) {
+                                                        return '危险';
+                                                    }
+                                                    return '';
+                                                }
+                                            },
+                                            title: {
+                                                offsetCenter: [0, '-20%'],
+                                                fontSize: 40
+                                            },
+                                            detail: {
+                                                fontSize: 50,
+                                                offsetCenter: [0, '0%'],
+                                                valueAnimation: true,
+                                                formatter: function (value) {
+                                                    return Math.round(value * 100) + '分';
+                                                },
+                                                color: 'auto'
+                                            },
+                                            data: [
+                                                {
+                                                    value: "${items[0].grade}"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "type": "panel",
+                            "title": "制品漏洞情况",
+                            "className": "Panel--primary",
+                            "body":
+                                {
+                                    "type": "chart",
+                                    "config": {
+                                        title: {
+                                            text: '各个漏洞等级的制品数量占比',
+                                            subtext: 'xxx',
+                                            left: 'center'
+                                        },
+                                        tooltip: {
+                                            trigger: 'item'
+                                        },
+                                        legend: {
+                                            orient: 'vertical',
+                                            left: 'left'
+                                        },
+                                        series: [
+                                            {
+                                                name: '',
+                                                type: 'pie',
+                                                radius: '50%',
+                                                label: {
+                                                    formatter: '{b}: ({d}%)'
+                                                },
+                                                data: [
+                                                    {value: "${items[0].artifactVul4Num}", name: '高危'},
+                                                    {value: "${items[0].artifactVul3Num}", name: '严重'},
+                                                    {value: "${items[0].artifactVul4Num}", name: '中危'},
+                                                    {value: "${items[0].artifactVul1Num}", name: '低危'},
+                                                    {value: "${items[0].artifactVul0Num}", name: '无'}
+                                                ],
+                                                emphasis: {
+                                                    itemStyle: {
+                                                        shadowBlur: 10,
+                                                        shadowOffsetX: 0,
+                                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                        },
+                        {
+                            "type": "panel",
+                            "title": "制品开源协议分布",
+                            "className": "Panel--primary",
+                            "body":
+                                {
+                                    "type": "chart",
+                                    "config": {
+                                        title: {
+                                            text: '各个开源协议的制品数量占比',
+                                            subtext: 'xxx',
+                                            left: 'center'
+                                        },
+                                        tooltip: {
+                                            trigger: 'item'
+                                        },
+                                        legend: {
+                                            orient: 'vertical',
+                                            left: 'left'
+                                        },
+                                        series: [
+                                            {
+                                                name: '',
+                                                type: 'pie',
+                                                radius: '50%',
+                                                label: {
+                                                    formatter: '{b}: ({d}%)'
+                                                },
+                                                data: [
+                                                    {value: "${items[0].artifactLicenseRisk3Num}", name: '高传染性'},
+                                                    {value: "${items[0].artifactLicenseRisk2Num}", name: '中传染性'},
+                                                    {value: "${items[0].artifactLicenseRisk1Num}", name: '低传染性'},
+                                                    {value: "${items[0].artifactLicenseRisk0Num}", name: '无传染性'},
+                                                ],
+                                                emphasis: {
+                                                    itemStyle: {
+                                                        shadowBlur: 10,
+                                                        shadowOffsetX: 0,
+                                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                    }
+                                                }
+                                            }
+                                        ],
+                                        color: ['#002c53', '#ffa510', '#0c84c6', '#f74d4d', '#2455a4', '#41b7ac']
+                                    }
+                                }
+                        }
+                    ]
+                },
+                {
+                    "type": "grid",
+                    "columns": [
+                        {
+                            "type": "panel",
+                            "title": "风险系数最高的制品Top-100",
+                            "className": "Panel--primary",
+                            "body": [
+                                {
+                                    "type": "html",
+                                    "html": "一个制品的风险系数 = 其所有的漏洞风险之和；每个漏洞的风险 = 风险等级 * 利用难度"
+                                },
+                                {
+                                    "type": "crud",
+                                    "loadDataOnce": true,
+                                    "syncLocation": false,
+                                    "api": {
+                                        "method": "get",
+                                        "url": "/api/state/top",
+                                        "dataType": "json"
+                                    },
+                                    "columns": [
+                                        {
+                                            "name": "artifactId",
+                                            "label": "制品Id",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "artifactOrg",
+                                            "label": "制品组织",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "artifactName",
+                                            "label": "制品名称",
+                                            "type": "text",
+                                            "searchable": true
+                                        },
+                                        {
+                                            "name": "artifactVersion",
+                                            "label": "制品版本",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "risk",
+                                            "label": "风险系数",
+                                            "type": "text"
+                                        }
+                                    ],
+                                    "perPage": 10,
+                                    "perPageAvailable": [10, 20, 50, 100]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
             "aside": [
                 {
                     "type": "nav",
                     "stacked": true,
                     "links": [
                         {
-                            "label": "总览",
-                            "to": "/index.html"
+                            "label": "总览", "icon": "fa-solid fa-house",
+                            "to": "/"
                         },
                         {
                             "label": "基础信息管理",
@@ -117,7 +367,8 @@
             {},
             {}
         );
-    })();
+    })
+    ();
 </script>
 </body>
 </html>

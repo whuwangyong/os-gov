@@ -86,3 +86,15 @@ WHERE a.id = av.artifact_id
 GROUP BY artifact_id
 ORDER BY risk DESC;
 
+SELECT COUNT(DISTINCT artifact_id)
+FROM artifact_vulnerability AS av,
+     vulnerability AS v
+WHERE v.id = av.vulnerability_id
+  AND level = 4;
+
+
+SELECT COUNT(artifact_id)
+FROM artifact_license AS a,
+     license AS l
+WHERE a.license_id = l.id
+  AND risk = 0;
