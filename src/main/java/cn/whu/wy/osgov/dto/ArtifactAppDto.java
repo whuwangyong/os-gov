@@ -1,24 +1,21 @@
 package cn.whu.wy.osgov.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * @author WangYong
- * Date 2022/08/24
- * Time 18:33
+ * Date 2022/09/05
+ * Time 21:53
  */
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class ArtifactVulnerabilityDto {
-
+@NoArgsConstructor
+public class ArtifactAppDto {
     private int artifactId;
     private String artifactName;
-    private int vulnerabilityId;
-    private String vulnerabilityName;
-    private byte level;
+    private String appName;
+    private boolean reDev;
+    private boolean support;
 }

@@ -41,7 +41,7 @@
             "body": [
                 {
                     "type": "crud",
-                    "syncLocation": false,
+                    "syncLocation": true,
                     "api": {
                         "method": "get",
                         "url": "/api/licenses",
@@ -222,6 +222,7 @@
                     "messages": {},
                     "filter": {
                         "title": "查询条件",
+                        "submitText": "查询",
                         "body": [
                             {
                                 "type": "input-text",
@@ -231,7 +232,7 @@
                         ]
                     },
                     "perPageField": "pageSize",
-                    "perPage": 100
+                    "perPage": 20
                 }
             ],
             "aside": [

@@ -37,146 +37,121 @@
         // 通过替换下面这个配置来生成不同页面
         let amisJSON = {
             "type": "page",
-            "title": "标签列表",
+            "title": "制品标签",
+            "subTitle": "制品标签",
+            "remark": "暂无提示",
             "body": [
                 {
                     "type": "crud",
                     "syncLocation": true,
+                    "loadDataOnce": true,
+                    "autoFillHeight": false,
+                    // "loadDataOnceFetchOnFilter": true,
+                    // "autoGenerateFilter": true,
+                    // "alwaysShowPagination": true,
+                    "footerToolbar": [
+                        "statistics",
+                        "switch-per-page",
+                        "pagination"
+                    ],
                     "api": {
                         "method": "get",
-                        "url": "/api/tags",
+                        "url": "/api/artifacts-tags",
                         "dataType": "json"
                     },
                     "columns": [
                         {
-                            "name": "id",
-                            "label": "ID",
-                            "type": "text"
-                        },
-                        {
-                            "name": "name",
-                            "label": "标签名称",
-                            "type": "text"
-                        },
-                        {
                             "type": "operation",
-                            "label": "操作",
+                            "label": "制品Id",
+                            "remark": "点击id查看制品详情",
                             "buttons": [
                                 {
-                                    "label": "编辑",
+                                    "label": "${artifactId}",
                                     "type": "button",
-                                    "actionType": "dialog",
                                     "level": "link",
-                                    "dialog": {
-                                        "title": "编辑",
-                                        "body": {
-                                            "type": "form",
-                                            "api": "put:/api/tags",
-                                            "body": [
-                                                {
-                                                    "label": "id",
-                                                    "name": "id",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "标签名称",
-                                                    "name": "name",
-                                                    "type": "input-text"
-                                                }
-                                            ]
-                                        }
-                                    }
-                                },
-                                {
-                                    "label": "查看",
-                                    "type": "button",
-                                    "actionType": "dialog",
-                                    "level": "link",
-                                    "dialog": {
-                                        "title": "查看详情",
-                                        "body": {
-                                            "type": "form",
-                                            "body": [
-                                                {
-                                                    "name": "id",
-                                                    "label": "ID",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "name": "name",
-                                                    "label": "标签名称",
-                                                    "type": "static"
-                                                }
-                                            ]
-                                        }
-                                    }
-                                },
-                                {
-                                    "type": "button",
-                                    "label": "删除",
                                     "actionType": "ajax",
-                                    "level": "link",
-                                    "className": "text-danger",
-                                    "confirmText": "确定要删除？",
                                     "api": {
-                                        "method": "delete",
-                                        "url": "/api/tags/${id}"
-                                    }
-                                }
-                            ]
-                        }
-                    ],
-                    "bulkActions": [],
-                    "itemActions": [],
-                    "features": [
-                        "create",
-                        "filter",
-                        "update",
-                        "view",
-                        "delete"
-                    ],
-                    "filterColumnCount": 3,
-                    "headerToolbar": [
-                        {
-                            "label": "新增",
-                            "type": "button",
-                            "actionType": "dialog",
-                            "level": "primary",
-                            "dialog": {
-                                "title": "新增",
-                                "body": {
-                                    "type": "form",
-                                    "api": {
-                                        "method": "post",
-                                        "url": "/api/tags",
+                                        "method": "get",
+                                        "url": "/api/artifacts/${artifactId}",
                                         "dataType": "json"
                                     },
-                                    "body": [
-                                        {
-                                            "type": "input-text",
-                                            "name": "name",
-                                            "label": "标签名称"
+                                    "feedback": {
+                                        // feedback本身是个对话框
+                                        "title": "制品详情",
+                                        "closeOnEsc": true,
+                                        "closeOnOutside": true,
+                                        "actions": [],
+                                        // 里面再嵌入一个表单
+                                        "body": {
+                                            "type": "form",
+                                            "mode": "horizontal",
+                                            "body": [
+                                                {
+                                                    "tpl": "${items[0].id}",
+                                                    "label": "ID",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "tpl": "${items[0].org}",
+                                                    "label": "组织",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "名称",
+                                                    "tpl": "${items[0].name}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "tpl": "${items[0].version}",
+                                                    "label": "版本",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "名称",
+                                                    "tpl": "${items[0].name}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "发布日期",
+                                                    "tpl": "${items[0].publishDate}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "来源",
+                                                    "tpl": "${items[0].author}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "角色",
+                                                    "tpl": "${items[0].role}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "描述",
+                                                    "tpl": "${items[0].description}",
+                                                    "type": "static-tpl"
+                                                }
+                                            ]
                                         }
-                                    ]
+                                    }
                                 }
-                            }
+                            ],
                         },
-                        "bulkActions"
+                        {
+                            "name": "artifactName",
+                            "label": "制品名称",
+                            "type": "text",
+                            "searchable": true
+                        },
+                        {
+                            "name": "tagName",
+                            "type": "text",
+                            "label": "标签名称",
+                            "searchable": true
+                        }
                     ],
-                    "messages": {},
-                    "filter": {
-                        "title": "查询条件",
-                        "submitText": "查询",
-                        "body": [
-                            {
-                                "type": "input-text",
-                                "name": "name",
-                                "label": "标签名称",
-                            }
-                        ]
-                    },
-                    "perPageField": "pageSize",
-                    "perPage": 20
+                    "perPage": 20,
+                    "perPageAvailable": [10, 20, 50, 100, 200]
                 }
             ],
             "aside": [

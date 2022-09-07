@@ -9,7 +9,8 @@ package cn.whu.wy.osgov.dto.response;
  */
 public enum ResponseCode {
 
-    SUCCESS(0, "成功"),
+    // 成功返回空串，非空时前端会展示
+    SUCCESS(0, ""),
     FAILURE(1, "服务异常，请稍后再试"),
 
 

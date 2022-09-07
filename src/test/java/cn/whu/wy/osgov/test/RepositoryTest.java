@@ -174,8 +174,8 @@ public class RepositoryTest {
     @Order(6)
     public void insertVulnerability() {
         log.info("insertVulnerability");
-        byte[] level = {0, 1, 2, 3};
-        byte[] difficulty = {0, 1, 2, 3};
+        byte[] level = {1, 2, 3, 4};
+        byte[] difficulty = {1, 2, 3, 4};
         List<Vulnerability> vulnerabilityList = new ArrayList<>(vulnerabilityNum);
         for (int i = 1; i <= vulnerabilityNum; i++) {
             vulnerabilityList.add(Vulnerability.builder()

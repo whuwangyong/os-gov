@@ -45,7 +45,9 @@
                     "type": "crud",
                     "syncLocation": true,
                     "loadDataOnce": true,
-                    // "autoGenerateFilter": true,
+                    "autoFillHeight": false,
+                    // "loadDataOnceFetchOnFilter": true,
+                    // "autoGenerateFilter": true, // 有点问题，搜索一次后查询条件不显示了，或许与"type": "operation"有关
                     // "alwaysShowPagination": true,
                     "footerToolbar": [
                         "statistics",
@@ -59,16 +61,180 @@
                     },
                     "columns": [
                         {
+                            "type": "operation",
+                            "label": "制品Id",
+                            "remark": "点击id查看制品详情",
+                            "buttons": [
+                                {
+                                    "label": "${artifactId}",
+                                    "type": "button",
+                                    "level": "link",
+                                    "actionType": "ajax",
+                                    "api": {
+                                        "method": "get",
+                                        "url": "/api/artifacts/${artifactId}",
+                                        "dataType": "json"
+                                    },
+                                    "feedback": {
+                                        // feedback本身是个对话框
+                                        "title": "制品详情",
+                                        "closeOnEsc": true,
+                                        "closeOnOutside": true,
+                                        "actions": [],
+                                        // 里面再嵌入一个表单
+                                        "body": {
+                                            "type": "form",
+                                            "mode": "horizontal",
+                                            "body": [
+                                                {
+                                                    "tpl": "${items[0].id}",
+                                                    "label": "ID",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "tpl": "${items[0].org}",
+                                                    "label": "组织",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "名称",
+                                                    "tpl": "${items[0].name}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "tpl": "${items[0].version}",
+                                                    "label": "版本",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "名称",
+                                                    "tpl": "${items[0].name}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "发布日期",
+                                                    "tpl": "${items[0].publishDate}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "来源",
+                                                    "tpl": "${items[0].author}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "角色",
+                                                    "tpl": "${items[0].role}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "描述",
+                                                    "tpl": "${items[0].description}",
+                                                    "type": "static-tpl"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ],
+                        },
+                        {
                             "name": "artifactName",
                             "label": "制品名称",
                             "type": "text",
                             "searchable": true
                         },
                         {
+                            "type": "operation",
+                            "label": "漏洞Id",
+                            "remark": "点击Id查看漏洞详情",
+                            "buttons": [
+                                {
+                                    "label": "${vulnerabilityId}",
+                                    "type": "button",
+                                    "level": "link",
+                                    "actionType": "ajax",
+                                    "api": {
+                                        "method": "get",
+                                        "url": "/api/vulnerabilities/${vulnerabilityId}",
+                                        "dataType": "json"
+                                    },
+                                    "feedback": {
+                                        // feedback本身是个对话框
+                                        "title": "漏洞详情",
+                                        "closeOnEsc": true,
+                                        "closeOnOutside": true,
+                                        "actions": [],
+                                        // 里面再嵌入一个表单
+                                        "body": {
+                                            "type": "form",
+                                            "mode": "horizontal",
+                                            "body": [
+                                                {
+                                                    "tpl": "${items[0].id}",
+                                                    "label": "ID",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "tpl": "${items[0].cve}",
+                                                    "label": "cve编号",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "cnnvd编号",
+                                                    "tpl": "${items[0].cnnvd}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "tpl": "${items[0].cwe}",
+                                                    "label": "cwe编号",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "名称",
+                                                    "tpl": "${items[0].name}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "风险等级",
+                                                    "tpl": "${items[0].level}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "利用难度",
+                                                    "tpl": "${items[0].difficulty}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "曝光日期",
+                                                    "tpl": "${items[0].exposedDate}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "描述",
+                                                    "tpl": "${items[0].description}",
+                                                    "type": "static-tpl"
+                                                },
+                                                {
+                                                    "label": "修复建议",
+                                                    "tpl": "${items[0].suggestion}",
+                                                    "type": "static-tpl"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ],
+                        },
+                        {
                             "name": "vulnerabilityName",
                             "type": "text",
                             "label": "漏洞名称",
                             "searchable": true
+                        },
+                        {
+                            "name": "level",
+                            "type": "text",
+                            "label": "风险等级"
                         }
                     ],
                     "perPage": 20,

@@ -20,4 +20,7 @@ public class RequestPath {
     public static final String ARTIFACT_LICENSE = root + "artifacts-licenses";
     public static final String ARTIFACT_TAG = root + "artifacts-tags";
     public static final String ARTIFACT_VULNERABILITY = root + "artifacts-vulnerabilities";
+
+    // 统计数据
+    public static final String STATE = root + "state";
 }

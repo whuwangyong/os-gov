@@ -37,7 +37,6 @@
         // 通过替换下面这个配置来生成不同页面
         let amisJSON = {
             "type": "page",
-            "id": "u:315f827062f0",
             "title": "制品列表",
             "subTitle": "副标题",
             "remark": "提示",
@@ -242,10 +241,14 @@
                     ],
                     "headerToolbar": [
                         {
-                            "label": "新增",
+                            "type": "bulk-actions",
+                            "id": "u:fe1bd18f2472"
+                        },
+                        {
                             "type": "button",
+                            "id": "u:82bc140f194e",
+                            "label": "新增",
                             "actionType": "dialog",
-                            "level": "primary",
                             "dialog": {
                                 "title": "新增",
                                 "body": {
@@ -293,27 +296,57 @@
                                     ]
                                 }
                             },
-                            "id": "u:82bc140f194e"
+                            "level": "primary"
                         },
-                        "bulkActions"
+                        {
+                            "type": "export-excel",
+                            "tpl": "内容",
+                            "id": "u:ca0d3b28ee27",
+                            "level": "primary"
+                        },
+                        {
+                            "type": "button",
+                            "tpl": "内容",
+                            "id": "u:89292108435b",
+                            "label": "导入 Excel",
+                            "level": "primary"
+                        }
                     ],
                     "messages": {},
                     "perPageField": "pageSize",
-                    "perPage": 100,
+                    "perPage": 20,
                     "filter": {
                         "title": "查询条件",
+                        "submitText": "查询",
                         "body": [
                             {
                                 "type": "input-text",
                                 "name": "name",
-                                "label": "name",
+                                "label": "制品名称",
                                 "id": "u:773f1c15a9f2"
                             }
                         ],
-                        "id": "u:1d2a1be29e51"
-                    }
+                        "id": "u:1d2a1be29e51",
+                        "wrapWithPanel": true,
+                        "autoFocus": false,
+                        "mode": "horizontal",
+                        "affixFooter": false,
+                        "panelClassName": "Panel--default"
+                    },
+                    "perPageAvailable": [
+                        10
+                    ],
+                    "footerToolbar": [
+                        {
+                            "type": "statistics"
+                        },
+                        {
+                            "type": "pagination"
+                        }
+                    ]
                 }
             ],
+            "id": "u:315f827062f0",
             "aside": [
                 {
                     "type": "nav",
