@@ -12,6 +12,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlConfig;
 
 import java.time.LocalDate;
 
@@ -31,6 +33,7 @@ public class ArtifactRepositoryTest {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Sql(scripts = {"/ddl.sql"}, config = @SqlConfig(encoding = "utf-8", transactionMode = SqlConfig.TransactionMode.ISOLATED))
     @Order(1)
     @Test
     public void init() {
