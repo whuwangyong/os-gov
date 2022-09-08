@@ -1,7 +1,7 @@
 package cn.whu.wy.osgov.service;
 
-import cn.whu.wy.osgov.dto.state.ArtifactRiskDto;
-import cn.whu.wy.osgov.dto.state.StateDto;
+import cn.whu.wy.osgov.dto.statistics.ArtifactRiskDto;
+import cn.whu.wy.osgov.dto.statistics.StatisticsDto;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +14,12 @@ import java.util.List;
  * Time 09:43
  */
 @Service
-public class StateService extends BaseService {
-    public StateService(DataSource dataSource) {
+public class StatisticsService extends BaseService {
+    public StatisticsService(DataSource dataSource) {
         super(dataSource);
     }
 
-    public StateDto get() {
+    public StatisticsDto get() {
         Integer appNum = jdbcTemplate.queryForObject("SELECT COUNT(id) FROM app", Integer.class);
         Integer hostNum = jdbcTemplate.queryForObject("SELECT COUNT(id) FROM host", Integer.class);
         Integer licenseNum = jdbcTemplate.queryForObject("SELECT COUNT(id) FROM license", Integer.class);
@@ -73,7 +73,7 @@ public class StateService extends BaseService {
                 "  AND risk = 3", Integer.class);
 
 
-        StateDto stateDto = StateDto.builder()
+        StatisticsDto statisticsDto = StatisticsDto.builder()
                 .appNum(appNum)
                 .artifactNum(artifactNum)
                 .artifactVul0Num(artifactNum - artifactVul1Num - artifactVul2Num - artifactVul3Num - artifactVul4Num)
@@ -92,12 +92,12 @@ public class StateService extends BaseService {
 
         // 健康度计算公式：(漏洞健康度+协议健康度)/2
         // 漏洞健康度=无漏洞的制品数/总数
-        double gradeVul = 1.0 * stateDto.getArtifactVul0Num() / stateDto.getArtifactNum();
+        double gradeVul = 1.0 * statisticsDto.getArtifactVul0Num() / statisticsDto.getArtifactNum();
         // 协议健康度=无传染的制品数/总数
-        double gradeLicense = 1.0 * stateDto.getArtifactLicenseRisk0Num() / stateDto.getArtifactNum();
+        double gradeLicense = 1.0 * statisticsDto.getArtifactLicenseRisk0Num() / statisticsDto.getArtifactNum();
         double grade = (gradeVul + gradeLicense) / 2;
-        stateDto.setGrade(grade);
-        return stateDto;
+        statisticsDto.setGrade(grade);
+        return statisticsDto;
     }
 
     /**

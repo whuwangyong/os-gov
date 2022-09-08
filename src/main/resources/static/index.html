@@ -65,7 +65,7 @@
                                             splitNumber: 8,
                                             axisLine: { // 圆弧
                                                 lineStyle: {
-                                                    width: 5,
+                                                    width: 3,
                                                     color: [
                                                         [0.25, '#FF6E76'],
                                                         [0.5, '#FDDD60'],
@@ -87,40 +87,40 @@
                                                 length: 12,
                                                 lineStyle: {
                                                     color: 'auto',
-                                                    width: 2
+                                                    width: 1
                                                 }
                                             },
                                             splitLine: { // 大刻度
                                                 length: 20,
                                                 lineStyle: {
                                                     color: 'auto',
-                                                    width: 3
+                                                    width: 2
                                                 }
                                             },
                                             axisLabel: {
                                                 color: '#464646',
-                                                fontSize: 20,
-                                                distance: -70,
+                                                fontSize: 18,
+                                                distance: -50,
                                                 formatter: function (value) {
                                                     if (value === 0.875) {
-                                                        return '优秀';
+                                                        return 'A';
                                                     } else if (value === 0.625) {
-                                                        return '良好';
+                                                        return 'B';
                                                     } else if (value === 0.375) {
-                                                        return '一般';
+                                                        return 'C';
                                                     } else if (value === 0.125) {
-                                                        return '危险';
+                                                        return 'D';
                                                     }
                                                     return '';
                                                 }
                                             },
-                                            title: {
+                                            title: { // 分数上面的标题
                                                 offsetCenter: [0, '-20%'],
-                                                fontSize: 40
+                                                fontSize: 35
                                             },
-                                            detail: {
-                                                fontSize: 50,
-                                                offsetCenter: [0, '0%'],
+                                            detail: { // 分数
+                                                fontSize: 40,
+                                                offsetCenter: [0, '-5%'],
                                                 valueAnimation: true,
                                                 formatter: function (value) {
                                                     return Math.round(value * 100) + '分';
@@ -274,6 +274,46 @@
                                         {
                                             "name": "artifactVersion",
                                             "label": "制品版本",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "risk",
+                                            "label": "风险系数",
+                                            "type": "text"
+                                        }
+                                    ],
+                                    "perPage": 10,
+                                    "perPageAvailable": [10, 20, 50, 100]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "panel",
+                            "title": "风险系数最高的应用Top-100",
+                            "className": "Panel--primary",
+                            "body": [
+                                {
+                                    "type": "html",
+                                    "html": "一个应用的风险系数 = 其使用的所有制品的分线系数之和"
+                                },
+                                {
+                                    "type": "crud",
+                                    "loadDataOnce": true,
+                                    "syncLocation": false,
+                                    "api": {
+                                        "method": "get",
+                                        "url": "/api/state/top",
+                                        "dataType": "json"
+                                    },
+                                    "columns": [
+                                        {
+                                            "name": "artifactId",
+                                            "label": "应用Id",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "artifactName",
+                                            "label": "应用名称",
                                             "type": "text"
                                         },
                                         {

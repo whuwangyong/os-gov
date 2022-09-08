@@ -1,4 +1,4 @@
-package cn.whu.wy.osgov.dto.state;
+package cn.whu.wy.osgov.dto.statistics;
 
 import lombok.Data;
 

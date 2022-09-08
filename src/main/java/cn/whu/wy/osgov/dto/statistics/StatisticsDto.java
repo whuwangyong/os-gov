@@ -1,4 +1,4 @@
-package cn.whu.wy.osgov.dto.state;
+package cn.whu.wy.osgov.dto.statistics;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StateDto {
+public class StatisticsDto {
 
     // 健康度[0-1]，计算方法见StateService
     private double grade;

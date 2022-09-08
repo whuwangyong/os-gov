@@ -1,5 +1,21 @@
 # 开源治理工具设计
 
+[toc]
+
+## 技术栈
+
+- 后端：
+  - `spring-boot-starter-web`
+  - `spring-boot-starter-jdbc`
+- 前端：使用百度低代码前端框架[amis](https://baidu.github.io/amis/zh-CN/docs/index)
+
+## 截图
+
+![](./assets/1.png)
+![](./assets/2.png)
+![](./assets/3.png)
+![](./assets/4.png)
+
 ## 数据模型
 
 ### 术语

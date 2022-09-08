@@ -2,9 +2,9 @@ package cn.whu.wy.osgov.controller.domain;
 
 import cn.whu.wy.osgov.controller.RequestPath;
 import cn.whu.wy.osgov.dto.response.ResponseEntity;
-import cn.whu.wy.osgov.dto.state.ArtifactRiskDto;
-import cn.whu.wy.osgov.dto.state.StateDto;
-import cn.whu.wy.osgov.service.StateService;
+import cn.whu.wy.osgov.dto.statistics.ArtifactRiskDto;
+import cn.whu.wy.osgov.dto.statistics.StatisticsDto;
+import cn.whu.wy.osgov.service.StatisticsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,18 +18,18 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(RequestPath.STATE)
-public class StateController {
+public class StatisticsController {
 
-    private final StateService stateService;
+    private final StatisticsService statisticsService;
 
-    public StateController(StateService stateService) {
-        this.stateService = stateService;
+    public StatisticsController(StatisticsService statisticsService) {
+        this.statisticsService = statisticsService;
     }
 
     @GetMapping
     public ResponseEntity get() {
-        StateDto stateDto = stateService.get();
-        return ResponseEntity.success(stateDto);
+        StatisticsDto statisticsDto = statisticsService.get();
+        return ResponseEntity.success(statisticsDto);
     }
 
     /**
@@ -37,7 +37,7 @@ public class StateController {
      */
     @GetMapping("/top")
     public ResponseEntity top() {
-        List<ArtifactRiskDto> top = stateService.top();
+        List<ArtifactRiskDto> top = statisticsService.top();
         return ResponseEntity.success(top);
     }
 
