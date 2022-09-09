@@ -28,6 +28,15 @@ public class NavController {
         Resource resource = new ClassPathResource("static/nav.json");
         InputStream inputStream = resource.getInputStream();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+
+//      另一种写法
+//        StringBuilder sb = new StringBuilder();
+//        String line;
+//        while ((line = bufferedReader.readLine()) != null) {
+//            sb.append(line).append(System.lineSeparator());
+//        }
+//        return sb.toString();
+
         return new JSONParser().parse(bufferedReader);
     }
 }
