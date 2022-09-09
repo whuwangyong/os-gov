@@ -1,0 +1,65 @@
+{
+  "links": [
+    {
+      "label": "总览",
+      "icon": "fa-solid fa-house",
+      "to": "/"
+    },
+    {
+      "label": "基础信息管理",
+      "to": "/artifacts.html",
+      "children": [
+        {
+          "label": "制品",
+          "to": "/artifacts.html"
+        },
+        {
+          "label": "漏洞",
+          "to": "/vulnerabilities.html"
+        },
+        {
+          "label": "协议",
+          "to": "licenses.html"
+        },
+        {
+          "label": "标签",
+          "to": "tags.html"
+        },
+        {
+          "label": "应用",
+          "to": "apps.html"
+        },
+        {
+          "label": "主机",
+          "to": "hosts.html"
+        }
+      ]
+    },
+    {
+      "label": "关联关系维护",
+      "to": "/artifacts-vulnerabilities.html",
+      "children": [
+        {
+          "label": "制品-漏洞",
+          "to": "/artifacts-vulnerabilities.html"
+        },
+        {
+          "label": "制品-协议",
+          "to": "/artifacts-licenses.html"
+        },
+        {
+          "label": "制品-标签",
+          "to": "/artifacts-tags.html"
+        },
+        {
+          "label": "制品-应用",
+          "to": "/artifacts-apps.html"
+        },
+        {
+          "label": "应用-主机",
+          "to": "apps-hosts.html"
+        }
+      ]
+    }
+  ]
+}
