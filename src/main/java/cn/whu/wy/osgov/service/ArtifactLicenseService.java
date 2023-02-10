@@ -28,7 +28,7 @@ public class ArtifactLicenseService extends BaseService {
                 "     license,\n" +
                 "     artifact_license\n" +
                 "WHERE artifact.id = artifact_license.artifact_id\n" +
-                "  AND license.id = artifact_license.license_id";
+                "  AND license.id = artifact_license.license_id ORDER BY artifact.id";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtifactLicenseDto.class));
     }
 

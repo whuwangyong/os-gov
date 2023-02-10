@@ -1,6 +1,6 @@
 package cn.whu.wy.osgov.repository;
 
-import cn.whu.wy.osgov.entity.artifact.Artifact;
+import cn.whu.wy.osgov.entity.Artifact;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 

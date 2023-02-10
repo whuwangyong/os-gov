@@ -1,6 +1,6 @@
 package cn.whu.wy.osgov.test;
 
-import cn.whu.wy.osgov.entity.artifact.Artifact;
+import cn.whu.wy.osgov.entity.Artifact;
 import cn.whu.wy.osgov.utils.ClassUtils;
 import org.junit.jupiter.api.Test;
 

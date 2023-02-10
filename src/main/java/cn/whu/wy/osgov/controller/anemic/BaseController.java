@@ -36,10 +36,16 @@ public abstract class BaseController<T extends Entity> {
         return ResponseEntity.success(byId);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity getAll() {
+        List<T> all = repository.getAll();
+        return ResponseEntity.success(all);
+    }
+
     @GetMapping
     public ResponseEntity get(@RequestParam Map<String, String> params) {
         Map<String, String> p = params.entrySet().stream()
-                .filter(map -> StringUtils.hasText(map.getValue()))
+                .filter(entry -> StringUtils.hasText(entry.getValue()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         String pageSize = p.remove("pageSize");
@@ -48,7 +54,7 @@ public abstract class BaseController<T extends Entity> {
 
         // 除页码外还有别的参数，根据条件获取数据。不分页
         if (p.size() > 0) {
-            list = repository.query(p);
+            list = repository.queryLike(p);
             return ResponseEntity.success(list);
         } else if (pageSize != null && page != null) {
             // 指定页码时，按照页码获取数据

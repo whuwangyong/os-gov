@@ -160,6 +160,7 @@
                                     },
                                     "feedback": {
                                         // feedback本身是个对话框
+                                        "size": "lg",
                                         "title": "漏洞详情",
                                         "closeOnEsc": true,
                                         "closeOnOutside": true,
@@ -185,11 +186,6 @@
                                                     "type": "static-tpl"
                                                 },
                                                 {
-                                                    "tpl": "${items[0].cwe}",
-                                                    "label": "cwe编号",
-                                                    "type": "static-tpl"
-                                                },
-                                                {
                                                     "label": "名称",
                                                     "tpl": "${items[0].name}",
                                                     "type": "static-tpl"
@@ -201,7 +197,7 @@
                                                 },
                                                 {
                                                     "label": "利用难度",
-                                                    "tpl": "${items[0].difficulty}",
+                                                    "tpl": "${items[0].utilizeDegree}",
                                                     "type": "static-tpl"
                                                 },
                                                 {
@@ -216,7 +212,7 @@
                                                 },
                                                 {
                                                     "label": "修复建议",
-                                                    "tpl": "${items[0].suggestion}",
+                                                    "tpl": "${items[0].solution}",
                                                     "type": "static-tpl"
                                                 }
                                             ]

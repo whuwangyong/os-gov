@@ -38,132 +38,324 @@
         let amisJSON = {
             "type": "page",
             "title": "制品列表",
-            "subTitle": "副标题",
+            "subTitle": "本页面展示生产库和开发测试库的制品",
             "remark": "提示",
             "body": [
                 {
                     "type": "crud",
-                    "id": "u:d08d56808c15",
-                    "syncLocation": true,
+                    "loadDataOnce": true,
+                    "syncLocation": false,
+                    "keepItemSelectionOnPageChange": true,
+                    "checkOnItemClick": true,
                     "api": {
                         "method": "get",
-                        "url": "/api/artifacts"
+                        "url": "/api/artifacts/all"
                     },
+                    "headerToolbar": [
+                        {
+                            "type": "button",
+                            "label": "新增",
+                            "actionType": "dialog",
+                            "dialog": {
+                                "title": "新增",
+                                "closeOnEsc": true,
+                                "closeOnOutside": true,
+                                "body": {
+                                    "type": "form",
+                                    "api": {
+                                        "method": "post",
+                                        "url": "/api/artifacts"
+                                    },
+                                    "body": [
+                                        {
+                                            "type": "input-text",
+                                            "name": "org",
+                                            "label": "组织(group)",
+                                            "required": true
+
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "name",
+                                            "label": "名称(artifact)",
+                                            "required": true
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "version",
+                                            "label": "版本",
+                                            "required": true
+                                        },
+                                        {
+                                            "type": "input-date",
+                                            "name": "publishDate",
+                                            "label": "发布日期",
+                                            "format": "YYYY-MM-DD",
+                                            "required": true
+                                        },
+                                        {
+                                            "name": "author",
+                                            "label": "来源",
+                                            "type": "select",
+                                            "options": [
+                                                {
+                                                    "label": "开源",
+                                                    "value": "开源"
+                                                },
+                                                {
+                                                    "label": "自研",
+                                                    "value": "自研"
+                                                },
+                                                {
+                                                    "label": "商业",
+                                                    "value": "商业"
+                                                },
+                                                {
+                                                    "label": "信创",
+                                                    "value": "信创"
+                                                }
+                                            ],
+                                            "required": true
+                                        },
+                                        {
+                                            "name": "role",
+                                            "label": "角色",
+                                            "type": "select",
+                                            "options": [
+                                                {
+                                                    "label": "软件",
+                                                    "value": "软件"
+                                                },
+                                                {
+                                                    "label": "组件",
+                                                    "value": "组件"
+                                                },
+                                                {
+                                                    "label": "工具",
+                                                    "value": "工具"
+                                                },
+                                                {
+                                                    "label": "NA",
+                                                    "value": "NA"
+                                                }
+                                            ],
+                                            "required": true
+                                        },
+                                        {
+                                            "label": "运行环境",
+                                            "name": "env",
+                                            "type": "static",
+                                            "value": "未入库"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "description",
+                                            "label": "简介"
+                                        }
+                                    ]
+                                }
+                            },
+                            "level": "primary"
+                        },
+                        // {
+                        //     "type": "export-excel",
+                        //     "tpl": "内容",
+                        //     "level": "primary"
+                        // },
+                        // {
+                        //     "type": "button",
+                        //     "tpl": "内容",
+                        //     "label": "导入 Excel",
+                        //     "level": "primary"
+                        // },
+                        "bulkActions"
+                    ],
+                    "bulkActions": [
+                        {
+                            "label": "问询",
+                            "level": "primary",
+                            "disabledTip": "选择需要的组件以提交问询单",
+                            "tooltipTrigger": "hover",
+                            "tooltipPlacement": "right",
+                            "actionType": "dialog",
+                            "dialog": {
+                                "title": "提交问询单",
+                                "closeOnEsc": true,
+                                "closeOnOutside": true,
+                                "body": {
+                                    "type": "form",
+                                    "redirect": "/ask.html",
+                                    "api": {
+                                        "method": "post",
+                                        "url": "/api/ask"
+                                    },
+                                    "body": [
+                                        {
+                                            "type": "table",
+                                            "title": "已选择的组件",
+                                            "source": "${selectedItems}",
+                                            "columns": [
+                                                {
+                                                    "name": "id",
+                                                    "label": "id"
+                                                },
+                                                {
+                                                    "name": "org",
+                                                    "label": "组织"
+                                                },
+                                                {
+                                                    "label": "名称",
+                                                    "name": "name"
+                                                },
+                                                {
+                                                    "label": "版本",
+                                                    "name": "version"
+                                                },
+                                                {
+                                                    "label": "运行环境",
+                                                    "name": "env"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "hidden": true,
+                                            "type": "input-text",
+                                            "name": "artifactIds",
+                                            "value": "${ids}"
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "project",
+                                            "label": "项目名称",
+                                            "placeholder": "随便起个名字吧，便于后续查看",
+                                            "required": true
+                                        },
+                                        {
+                                            "type": "input-text",
+                                            "name": "username",
+                                            "label": "申请人",
+                                            "required": true
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "columns": [
                         {
                             "name": "id",
                             "label": "ID",
-                            "type": "text",
-                            "id": "u:30357bf93532"
+                            "type": "text"
                         },
                         {
                             "name": "org",
                             "label": "组织",
-                            "type": "text",
-                            "id": "u:048b03f3dc41"
+                            "type": "text"
                         },
                         {
                             "type": "text",
                             "label": "名称",
                             "name": "name",
-                            "id": "u:d405c308b09f"
+                            "searchable": true
                         },
                         {
                             "type": "text",
                             "label": "版本",
-                            "name": "version",
-                            "id": "u:cf87589f4505"
+                            "name": "version"
                         },
                         {
                             "type": "date",
                             "label": "发布日期",
-                            "name": "publishDate",
-                            "id": "u:2911198348cc"
+                            "name": "publishDate"
                         },
                         {
                             "type": "text",
                             "label": "来源",
-                            "name": "author",
-                            "id": "u:701f78f17c58"
+                            "name": "author"
                         },
                         {
                             "type": "text",
                             "label": "角色",
-                            "name": "role",
-                            "id": "u:693aecc3aa2f"
+                            "name": "role"
                         },
                         {
                             "type": "text",
-                            "label": "简介",
-                            "name": "description",
-                            "id": "u:16d59c29ac66"
+                            "label": "运行环境",
+                            "name": "env",
+                            "remark": "用户新增的组件默认为\"未入库\""
                         },
                         {
                             "type": "operation",
                             "label": "操作",
                             "buttons": [
+                                // {
+                                //     "label": "编辑",
+                                //     "type": "button",
+                                //     "actionType": "dialog",
+                                //     "level": "link",
+                                //     "dialog": {
+                                //         "title": "编辑",
+                                //         "body": {
+                                //             "type": "form",
+                                //             "api": "put:/api/artifacts",
+                                //             "body": [
+                                //                 {
+                                //                     "label": "id",
+                                //                     "name": "id",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "label": "组织",
+                                //                     "name": "org",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "label": "名称",
+                                //                     "name": "name",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "label": "版本",
+                                //                     "name": "version",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "label": "发布日期",
+                                //                     "name": "publishDate",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "label": "来源",
+                                //                     "name": "author",
+                                //                     "type": "input-text"
+                                //                 },
+                                //                 {
+                                //                     "label": "角色",
+                                //                     "name": "role",
+                                //                     "type": "input-text"
+                                //                 },
+                                //                 {
+                                //                     "label": "运行环境",
+                                //                     "name": "env",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "label": "简介",
+                                //                     "name": "description",
+                                //                     "type": "input-text"
+                                //                 }
+                                //             ]
+                                //         }
+                                //     }
+                                // },
                                 {
-                                    "label": "编辑",
+                                    "label": "详情",
                                     "type": "button",
                                     "actionType": "dialog",
                                     "level": "link",
                                     "dialog": {
-                                        "title": "编辑",
-                                        "body": {
-                                            "type": "form",
-                                            "api": "put:/api/artifacts",
-                                            "body": [
-                                                {
-                                                    "label": "id",
-                                                    "name": "id",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "组织",
-                                                    "name": "org",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "名称",
-                                                    "name": "name",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "版本",
-                                                    "name": "version",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "发布日期",
-                                                    "name": "publishDate",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "来源",
-                                                    "name": "author",
-                                                    "type": "input-text"
-                                                },
-                                                {
-                                                    "label": "角色",
-                                                    "name": "role",
-                                                    "type": "input-text"
-                                                },
-                                                {
-                                                    "label": "简介",
-                                                    "name": "description",
-                                                    "type": "input-text"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    "id": "u:2a99f4f7000f"
-                                },
-                                {
-                                    "label": "查看",
-                                    "type": "button",
-                                    "actionType": "dialog",
-                                    "level": "link",
-                                    "dialog": {
+                                        "closeOnEsc": true,
+                                        "closeOnOutside": true,
                                         "title": "查看详情",
                                         "body": {
                                             "type": "form",
@@ -204,18 +396,23 @@
                                                     "type": "static"
                                                 },
                                                 {
+                                                    "label": "运行环境",
+                                                    "name": "env",
+                                                    "type": "static"
+                                                },
+                                                {
                                                     "label": "简介",
                                                     "name": "description",
                                                     "type": "static"
                                                 }
                                             ]
                                         }
-                                    },
-                                    "id": "u:4f3d2f2992b6"
+                                    }
                                 },
                                 {
-                                    "type": "button",
                                     "label": "删除",
+                                    "type": "button",
+                                    "visibleOn": "${env==='未入库'}",
                                     "actionType": "ajax",
                                     "level": "link",
                                     "className": "text-danger",
@@ -223,130 +420,20 @@
                                     "api": {
                                         "method": "delete",
                                         "url": "/api/artifacts/${id}"
-                                    },
-                                    "id": "u:2daeb8129eec"
+                                    }
                                 }
-                            ],
-                            "id": "u:5803a2f04b73"
+                            ]
                         }
                     ],
-                    "bulkActions": [],
-                    "itemActions": [],
-                    "features": [
-                        "create",
-                        "filter",
-                        "update",
-                        "view",
-                        "delete"
-                    ],
-                    "headerToolbar": [
-                        {
-                            "type": "bulk-actions",
-                            "id": "u:fe1bd18f2472"
-                        },
-                        {
-                            "type": "button",
-                            "id": "u:82bc140f194e",
-                            "label": "新增",
-                            "actionType": "dialog",
-                            "dialog": {
-                                "title": "新增",
-                                "body": {
-                                    "type": "form",
-                                    "api": {
-                                        "method": "post",
-                                        "url": "/api/artifacts"
-                                    },
-                                    "body": [
-                                        {
-                                            "type": "input-text",
-                                            "name": "org",
-                                            "label": "组织"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "name",
-                                            "label": "名称"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "version",
-                                            "label": "版本"
-                                        },
-                                        {
-                                            "type": "input-date",
-                                            "name": "publishDate",
-                                            "label": "发布日期"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "author",
-                                            "label": "来源"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "role",
-                                            "label": "角色"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "description",
-                                            "label": "简介"
-                                        }
-                                    ]
-                                }
-                            },
-                            "level": "primary"
-                        },
-                        {
-                            "type": "export-excel",
-                            "tpl": "内容",
-                            "id": "u:ca0d3b28ee27",
-                            "level": "primary"
-                        },
-                        {
-                            "type": "button",
-                            "tpl": "内容",
-                            "id": "u:89292108435b",
-                            "label": "导入 Excel",
-                            "level": "primary"
-                        }
-                    ],
-                    "messages": {},
-                    "perPageField": "pageSize",
-                    "perPage": 20,
-                    "filter": {
-                        "title": "查询条件",
-                        "submitText": "查询",
-                        "body": [
-                            {
-                                "type": "input-text",
-                                "name": "name",
-                                "label": "制品名称",
-                                "id": "u:773f1c15a9f2"
-                            }
-                        ],
-                        "id": "u:1d2a1be29e51",
-                        "wrapWithPanel": true,
-                        "autoFocus": false,
-                        "mode": "horizontal",
-                        "affixFooter": false,
-                        "panelClassName": "Panel--default"
-                    },
-                    "perPageAvailable": [
-                        10
-                    ],
+                    "perPage": 10,
+                    "perPageAvailable": [10, 20, 50, 100],
                     "footerToolbar": [
-                        {
-                            "type": "statistics"
-                        },
-                        {
-                            "type": "pagination"
-                        }
+                        "statistics",
+                        "switch-per-page",
+                        "pagination"
                     ]
                 }
             ],
-            "id": "u:315f827062f0",
             "aside": [
                 {
                     "type": "nav",

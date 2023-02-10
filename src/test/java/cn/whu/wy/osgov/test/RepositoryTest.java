@@ -1,9 +1,6 @@
 package cn.whu.wy.osgov.test;
 
 import cn.whu.wy.osgov.entity.*;
-import cn.whu.wy.osgov.entity.artifact.Artifact;
-import cn.whu.wy.osgov.entity.artifact.Author;
-import cn.whu.wy.osgov.entity.artifact.Role;
 import cn.whu.wy.osgov.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
@@ -29,7 +26,7 @@ import java.util.*;
  * Date 2022/08/23
  * Time 18:41
  */
-// @Sql(scripts = {"/ddl.sql"}, config = @SqlConfig(encoding = "utf-8", transactionMode = SqlConfig.TransactionMode.ISOLATED))
+// @Sql(scripts = {"/ddl-mysql.sql"}, config = @SqlConfig(encoding = "utf-8", transactionMode = SqlConfig.TransactionMode.ISOLATED))
 // 如果注解写在类上面，每个test方法之前都会执行一次脚本
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -83,8 +80,8 @@ public class RepositoryTest {
         this.artifactVulnerabilityRepository = artifactVulnerabilityRepository;
     }
 
-    @Sql(scripts = {"/ddl.sql"}, config = @SqlConfig(encoding = "utf-8", transactionMode = SqlConfig.TransactionMode.ISOLATED))
-//    @Test
+    @Sql(scripts = {"/ddl-mysql.sql"}, config = @SqlConfig(encoding = "utf-8", transactionMode = SqlConfig.TransactionMode.ISOLATED))
+    @Test
     @Order(-1)
     void createTableUseAnno() {
         log.info("createTableUseAnno");
@@ -94,7 +91,7 @@ public class RepositoryTest {
     @Order(0)
     void createTable() throws SQLException {
         log.info("createTable");
-        Resource classPathResource = new ClassPathResource("ddl.sql");
+        Resource classPathResource = new ClassPathResource("ddl-mysql.sql");
         EncodedResource encodedResource = new EncodedResource(classPathResource, "utf-8");
         ScriptUtils.executeSqlScript(dataSource.getConnection(), encodedResource);
     }
@@ -107,7 +104,7 @@ public class RepositoryTest {
         String[] envs = {"生产", "测试"};
         List<App> appList = new ArrayList<>(appNum);
         for (int i = 1; i <= appNum; i++) {
-            appList.add(new App("测试应用" + i, envs[random.nextInt(envs.length)]));
+            appList.add(new App("测试应用" + i, envs[random.nextInt(envs.length)], "核心"));
         }
         appRepository.add(appList);
     }
@@ -116,18 +113,20 @@ public class RepositoryTest {
     @Order(2)
     public void insertArtifact() {
         log.info("insertArtifact");
-        String[] authors = {Author.Independent.getValue(), Author.OpenSource.getValue(), Author.Commercial.getValue(), Author.XinChuang.getValue()};
-        String[] roles = {Role.Component.getValue(), Role.Software.getValue(), Role.Tool.getValue(), Role.NA.getValue()};
+        String[] authors = {Artifact.Author.Independent.getValue(), Artifact.Author.OpenSource.getValue(), Artifact.Author.Commercial.getValue(), Artifact.Author.XinChuang.getValue()};
+        String[] roles = {Artifact.Role.Component.getValue(), Artifact.Role.Software.getValue(), Artifact.Role.Tool.getValue(), Artifact.Role.NA.getValue()};
         List<Artifact> artifactList = new ArrayList<>(artifactNum);
         for (int i = 1; i <= artifactNum; i++) {
             artifactList.add(
                     Artifact.builder()
+                            .qaxId(UUID.randomUUID().toString())
                             .org("org.test" + i % 10)
                             .name("component-" + i)
                             .version("0." + i)
                             .publishDate(LocalDate.now())
                             .author(authors[random.nextInt(authors.length)])
                             .role(roles[random.nextInt(roles.length)])
+                            .env(i % 6 == 0 ? "生产库" : "开发测试库")
                             .description("一些简介")
                             .build()
             );
@@ -181,13 +180,13 @@ public class RepositoryTest {
             vulnerabilityList.add(Vulnerability.builder()
                     .cnnvd("cnnvd" + i)
                     .cve("cve" + i)
-                    .cwe("cwe" + i)
+                    .qaxOssId(UUID.randomUUID().toString().substring(0,20))
                     .name("test-vul" + i)
                     .level(level[random.nextInt(level.length)])
-                    .difficulty(difficulty[random.nextInt(difficulty.length)])
+                    .utilizeDegree(difficulty[random.nextInt(difficulty.length)])
                     .exposedDate(LocalDate.now())
                     .description("一些描述")
-                    .suggestion("升级")
+                    .solution("升级")
                     .build());
         }
         vulnerabilityRepository.add(vulnerabilityList);

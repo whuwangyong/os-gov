@@ -16,4 +16,5 @@ public class App extends Entity {
 
     private String name;
     private String env;
+    private String level;
 }

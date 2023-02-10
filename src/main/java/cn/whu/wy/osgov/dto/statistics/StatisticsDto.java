@@ -25,14 +25,16 @@ public class StatisticsDto {
     private int tagNum;
 
     private int artifactNum;
-    private int artifactVul4Num; // 有严重漏洞的制品数量
-    private int artifactVul3Num; // 有高危漏洞的制品数量
-    private int artifactVul2Num; // 有中危漏洞的制品数量
-    private int artifactVul1Num; // 有低危漏洞的制品数量
-    private int artifactVul0Num; // 无漏洞的制品数量
+    private int artifactsWithSeriousVul; // 有严重漏洞的制品数量
+    private int artifactsWithHighVul; // 有高危漏洞的制品数量
+    private int artifactsWithMiddleVul; // 有中危漏洞的制品数量
+    private int artifactsWithLowVul; // 有低危漏洞的制品数量
+    private int artifactsWithUnknownVul; // 有未知漏洞的制品数量
+    private int artifactsWithNoneVul; // 无漏洞的制品数量
 
-    private int artifactLicenseRisk3Num; // 高传染性开源协议的制品数量
-    private int artifactLicenseRisk2Num; // 中传染性开源协议的制品数量
-    private int artifactLicenseRisk1Num; // 低传染性开源协议的制品数量
-    private int artifactLicenseRisk0Num; // 无传染性开源协议的制品数量
+    private int artifactsWithSeriousRiskLicense; // 超高传染性开源协议的制品数量
+    private int artifactsWithHighRiskLicense; // 高传染性开源协议的制品数量
+    private int artifactsWithMiddleRiskLicense; // 中传染性开源协议的制品数量
+    private int artifactsWithLowRiskLicense; // 低传染性开源协议的制品数量
+    private int artifactsWithUnknownRiskLicense; // 未知传染性开源协议的制品数量
 }

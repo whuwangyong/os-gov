@@ -67,60 +67,62 @@
                             "type": "operation",
                             "label": "操作",
                             "buttons": [
-                                {
-                                    "label": "编辑",
-                                    "type": "button",
-                                    "actionType": "dialog",
-                                    "level": "link",
-                                    "dialog": {
-                                        "title": "编辑",
-                                        "body": {
-                                            "type": "form",
-                                            "api": "put:/api/licenses",
-                                            "body": [
-                                                {
-                                                    "label": "id",
-                                                    "name": "id",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "name": "name",
-                                                    "label": "协议名称",
-                                                    "type": "input-text"
-                                                },
-                                                {
-                                                    "label": "风险等级",
-                                                    "name": "risk",
-                                                    "type": "select",
-                                                    "options": [
-                                                        {
-                                                            "label": "0-高传染性",
-                                                            "value": 0
-                                                        },
-                                                        {
-                                                            "label": "1-中传染性",
-                                                            "value": 1
-                                                        },
-                                                        {
-                                                            "label": "2-低传染性",
-                                                            "value": 2
-                                                        },
-                                                        {
-                                                            "label": "3-无传染性",
-                                                            "value": 3
-                                                        },
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
-                                },
+                                // {
+                                //     "label": "编辑",
+                                //     "type": "button",
+                                //     "actionType": "dialog",
+                                //     "level": "link",
+                                //     "dialog": {
+                                //         "title": "编辑",
+                                //         "body": {
+                                //             "type": "form",
+                                //             "api": "put:/api/licenses",
+                                //             "body": [
+                                //                 {
+                                //                     "label": "id",
+                                //                     "name": "id",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "name": "name",
+                                //                     "label": "协议名称",
+                                //                     "type": "input-text"
+                                //                 },
+                                //                 {
+                                //                     "label": "风险等级",
+                                //                     "name": "risk",
+                                //                     "type": "select",
+                                //                     "options": [
+                                //                         {
+                                //                             "label": "0-高传染性",
+                                //                             "value": 0
+                                //                         },
+                                //                         {
+                                //                             "label": "1-中传染性",
+                                //                             "value": 1
+                                //                         },
+                                //                         {
+                                //                             "label": "2-低传染性",
+                                //                             "value": 2
+                                //                         },
+                                //                         {
+                                //                             "label": "3-无传染性",
+                                //                             "value": 3
+                                //                         },
+                                //                     ]
+                                //                 }
+                                //             ]
+                                //         }
+                                //     }
+                                // },
                                 {
                                     "label": "查看",
                                     "type": "button",
                                     "actionType": "dialog",
                                     "level": "link",
                                     "dialog": {
+                                        "closeOnEsc": true,
+                                        "closeOnOutside": true,
                                         "title": "查看详情",
                                         "body": {
                                             "type": "form",
@@ -144,18 +146,18 @@
                                         }
                                     }
                                 },
-                                {
-                                    "type": "button",
-                                    "label": "删除",
-                                    "actionType": "ajax",
-                                    "level": "link",
-                                    "className": "text-danger",
-                                    "confirmText": "确定要删除？",
-                                    "api": {
-                                        "method": "delete",
-                                        "url": "/api/licenses/${id}"
-                                    }
-                                }
+                                // {
+                                //     "type": "button",
+                                //     "label": "删除",
+                                //     "actionType": "ajax",
+                                //     "level": "link",
+                                //     "className": "text-danger",
+                                //     "confirmText": "确定要删除？",
+                                //     "api": {
+                                //         "method": "delete",
+                                //         "url": "/api/licenses/${id}"
+                                //     }
+                                // }
                             ]
                         }
                     ],
@@ -169,56 +171,56 @@
                         "delete"
                     ],
                     "filterColumnCount": 3,
-                    "headerToolbar": [
-                        {
-                            "label": "新增",
-                            "type": "button",
-                            "actionType": "dialog",
-                            "level": "primary",
-                            "dialog": {
-                                "title": "新增",
-                                "body": {
-                                    "type": "form",
-                                    "api": {
-                                        "method": "post",
-                                        "url": "/api/licenses",
-                                        "dataType": "json"
-                                    },
-                                    "body": [
-                                        {
-                                            "name": "name",
-                                            "label": "协议名称",
-                                            "type": "input-text"
-                                        },
-                                        {
-                                            "label": "风险等级",
-                                            "name": "risk",
-                                            "type": "select",
-                                            "options": [
-                                                {
-                                                    "label": "0-高传染性",
-                                                    "value": 0
-                                                },
-                                                {
-                                                    "label": "1-中传染性",
-                                                    "value": 1
-                                                },
-                                                {
-                                                    "label": "2-低传染性",
-                                                    "value": 2
-                                                },
-                                                {
-                                                    "label": "3-无传染性",
-                                                    "value": 3
-                                                },
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "bulkActions"
-                    ],
+                    // "headerToolbar": [
+                    //     {
+                    //         "label": "新增",
+                    //         "type": "button",
+                    //         "actionType": "dialog",
+                    //         "level": "primary",
+                    //         "dialog": {
+                    //             "title": "新增",
+                    //             "body": {
+                    //                 "type": "form",
+                    //                 "api": {
+                    //                     "method": "post",
+                    //                     "url": "/api/licenses",
+                    //                     "dataType": "json"
+                    //                 },
+                    //                 "body": [
+                    //                     {
+                    //                         "name": "name",
+                    //                         "label": "协议名称",
+                    //                         "type": "input-text"
+                    //                     },
+                    //                     {
+                    //                         "label": "风险等级",
+                    //                         "name": "risk",
+                    //                         "type": "select",
+                    //                         "options": [
+                    //                             {
+                    //                                 "label": "0-高传染性",
+                    //                                 "value": 0
+                    //                             },
+                    //                             {
+                    //                                 "label": "1-中传染性",
+                    //                                 "value": 1
+                    //                             },
+                    //                             {
+                    //                                 "label": "2-低传染性",
+                    //                                 "value": 2
+                    //                             },
+                    //                             {
+                    //                                 "label": "3-无传染性",
+                    //                                 "value": 3
+                    //                             },
+                    //                         ]
+                    //                     }
+                    //                 ]
+                    //             }
+                    //         }
+                    //     },
+                    //     "bulkActions"
+                    // ],
                     "messages": {},
                     "filter": {
                         "title": "查询条件",

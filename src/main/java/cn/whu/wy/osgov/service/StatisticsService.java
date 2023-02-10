@@ -26,75 +26,91 @@ public class StatisticsService extends BaseService {
         Integer tagNum = jdbcTemplate.queryForObject("SELECT COUNT(id) FROM tag", Integer.class);
         Integer artifactNum = jdbcTemplate.queryForObject("SELECT COUNT(id) FROM artifact", Integer.class);
 
-        Integer artifactVul4Num = jdbcTemplate.queryForObject(
+        Integer artifactsWithSeriousVul = jdbcTemplate.queryForObject(
+                "SELECT COUNT(DISTINCT artifact_id)\n" +
+                        "FROM artifact_vulnerability AS av,\n" +
+                        "     vulnerability AS v\n" +
+                        "WHERE v.id = av.vulnerability_id\n" +
+                        "  AND level = 16", Integer.class);
+        Integer artifactsWithHighVul = jdbcTemplate.queryForObject(
+                "SELECT COUNT(DISTINCT artifact_id)\n" +
+                        "FROM artifact_vulnerability AS av,\n" +
+                        "     vulnerability AS v\n" +
+                        "WHERE v.id = av.vulnerability_id\n" +
+                        "  AND level = 8", Integer.class);
+        Integer artifactsWithMiddleVul = jdbcTemplate.queryForObject(
                 "SELECT COUNT(DISTINCT artifact_id)\n" +
                         "FROM artifact_vulnerability AS av,\n" +
                         "     vulnerability AS v\n" +
                         "WHERE v.id = av.vulnerability_id\n" +
                         "  AND level = 4", Integer.class);
-        Integer artifactVul3Num = jdbcTemplate.queryForObject(
-                "SELECT COUNT(DISTINCT artifact_id)\n" +
-                        "FROM artifact_vulnerability AS av,\n" +
-                        "     vulnerability AS v\n" +
-                        "WHERE v.id = av.vulnerability_id\n" +
-                        "  AND level = 3", Integer.class);
-        Integer artifactVul2Num = jdbcTemplate.queryForObject(
+        Integer artifactsWithLowVul = jdbcTemplate.queryForObject(
                 "SELECT COUNT(DISTINCT artifact_id)\n" +
                         "FROM artifact_vulnerability AS av,\n" +
                         "     vulnerability AS v\n" +
                         "WHERE v.id = av.vulnerability_id\n" +
                         "  AND level = 2", Integer.class);
-        Integer artifactVul1Num = jdbcTemplate.queryForObject(
+        Integer artifactsWithUnknownVul = jdbcTemplate.queryForObject(
                 "SELECT COUNT(DISTINCT artifact_id)\n" +
                         "FROM artifact_vulnerability AS av,\n" +
                         "     vulnerability AS v\n" +
                         "WHERE v.id = av.vulnerability_id\n" +
                         "  AND level = 1", Integer.class);
 
-        Integer artifactLicenseRisk0Num = jdbcTemplate.queryForObject("SELECT COUNT(artifact_id)\n" +
+        Integer artifactsWithSeriousRiskLicense = jdbcTemplate.queryForObject("SELECT COUNT(artifact_id)\n" +
                 "FROM artifact_license AS a,\n" +
                 "     license AS l\n" +
                 "WHERE a.license_id = l.id\n" +
-                "  AND risk = 0", Integer.class);
-        Integer artifactLicenseRisk1Num = jdbcTemplate.queryForObject("SELECT COUNT(artifact_id)\n" +
+                "  AND risk = 16", Integer.class);
+        Integer artifactsWithHighRiskLicense = jdbcTemplate.queryForObject("SELECT COUNT(artifact_id)\n" +
                 "FROM artifact_license AS a,\n" +
                 "     license AS l\n" +
                 "WHERE a.license_id = l.id\n" +
-                "  AND risk = 1", Integer.class);
-        Integer artifactLicenseRisk2Num = jdbcTemplate.queryForObject("SELECT COUNT(artifact_id)\n" +
+                "  AND risk = 8", Integer.class);
+        Integer artifactsWithMiddleRiskLicense = jdbcTemplate.queryForObject("SELECT COUNT(artifact_id)\n" +
+                "FROM artifact_license AS a,\n" +
+                "     license AS l\n" +
+                "WHERE a.license_id = l.id\n" +
+                "  AND risk = 4", Integer.class);
+        Integer artifactsWithLowRiskLicense = jdbcTemplate.queryForObject("SELECT COUNT(artifact_id)\n" +
                 "FROM artifact_license AS a,\n" +
                 "     license AS l\n" +
                 "WHERE a.license_id = l.id\n" +
                 "  AND risk = 2", Integer.class);
-        Integer artifactLicenseRisk3Num = jdbcTemplate.queryForObject("SELECT COUNT(artifact_id)\n" +
+        Integer artifactsWithUnknownRiskLicense = jdbcTemplate.queryForObject("SELECT COUNT(artifact_id)\n" +
                 "FROM artifact_license AS a,\n" +
                 "     license AS l\n" +
                 "WHERE a.license_id = l.id\n" +
-                "  AND risk = 3", Integer.class);
+                "  AND risk = 1", Integer.class);
 
 
         StatisticsDto statisticsDto = StatisticsDto.builder()
                 .appNum(appNum)
                 .artifactNum(artifactNum)
-                .artifactVul0Num(artifactNum - artifactVul1Num - artifactVul2Num - artifactVul3Num - artifactVul4Num)
-                .artifactVul1Num(artifactVul1Num)
-                .artifactVul2Num(artifactVul2Num)
-                .artifactVul3Num(artifactVul3Num)
-                .artifactVul4Num(artifactVul4Num)
+                .artifactsWithNoneVul(artifactNum - artifactsWithUnknownVul - artifactsWithLowVul - artifactsWithMiddleVul - artifactsWithHighVul - artifactsWithSeriousVul)
+                .artifactsWithUnknownVul(artifactsWithUnknownVul)
+                .artifactsWithLowVul(artifactsWithLowVul)
+                .artifactsWithMiddleVul(artifactsWithMiddleVul)
+                .artifactsWithHighVul(artifactsWithHighVul)
+                .artifactsWithSeriousVul(artifactsWithSeriousVul)
                 .hostNum(hostNum)
                 .licenseNum(licenseNum)
                 .tagNum(tagNum)
-                .artifactLicenseRisk0Num(artifactLicenseRisk0Num)
-                .artifactLicenseRisk1Num(artifactLicenseRisk1Num)
-                .artifactLicenseRisk2Num(artifactLicenseRisk2Num)
-                .artifactLicenseRisk3Num(artifactLicenseRisk3Num)
+                .artifactsWithUnknownRiskLicense(artifactsWithUnknownRiskLicense)
+                .artifactsWithLowRiskLicense(artifactsWithLowRiskLicense)
+                .artifactsWithMiddleRiskLicense(artifactsWithMiddleRiskLicense)
+                .artifactsWithHighRiskLicense(artifactsWithHighRiskLicense)
+                .artifactsWithSeriousRiskLicense(artifactsWithSeriousRiskLicense)
                 .build();
 
         // 健康度计算公式：(漏洞健康度+协议健康度)/2
         // 漏洞健康度=无漏洞的制品数/总数
-        double gradeVul = 1.0 * statisticsDto.getArtifactVul0Num() / statisticsDto.getArtifactNum();
+        double gradeVul = 1.0 * (statisticsDto.getArtifactsWithUnknownVul() + statisticsDto.getArtifactsWithNoneVul())
+                / statisticsDto.getArtifactNum();
         // 协议健康度=无传染的制品数/总数
-        double gradeLicense = 1.0 * statisticsDto.getArtifactLicenseRisk0Num() / statisticsDto.getArtifactNum();
+        double gradeLicense = 1.0 * (statisticsDto.getArtifactsWithUnknownRiskLicense()
+                + statisticsDto.getArtifactsWithLowRiskLicense())
+                / statisticsDto.getArtifactNum();
         double grade = (gradeVul + gradeLicense) / 2;
         statisticsDto.setGrade(grade);
         return statisticsDto;
@@ -108,7 +124,7 @@ public class StatisticsService extends BaseService {
                 "       a.org                       AS artifact_org,\n" +
                 "       a.name                      AS artifact_name,\n" +
                 "       a.version                   AS artifact_version,\n" +
-                "       SUM(v.level * v.difficulty) AS risk\n" +
+                "       SUM(v.level * v.utilize_degree) AS risk\n" +
                 "FROM artifact AS a,\n" +
                 "     vulnerability AS v,\n" +
                 "     artifact_vulnerability AS av\n" +

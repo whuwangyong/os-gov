@@ -21,6 +21,10 @@ public class RequestPath {
     public static final String ARTIFACT_TAG = root + "artifacts-tags";
     public static final String ARTIFACT_VULNERABILITY = root + "artifacts-vulnerabilities";
 
+    public static final String ARTIFACT_ASK = root + "ask";
+
     // 统计数据
     public static final String STATE = root + "state";
+
+    public static final String NAV = root + "nav";
 }

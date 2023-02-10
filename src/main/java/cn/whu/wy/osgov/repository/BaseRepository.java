@@ -17,6 +17,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +53,12 @@ public abstract class BaseRepository<T extends Entity> {
      */
     public int add(T t) {
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(t);
+        if (t.getCreateTime() == null) {
+            t.setCreateTime(LocalDateTime.now());
+        }
+        if (t.getUpdateTime() == null) {
+            t.setUpdateTime(LocalDateTime.now());
+        }
         Number number = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource);
 //        log.info("add: {}, return key={}", t, number);
         return number.intValue();
@@ -65,7 +73,16 @@ public abstract class BaseRepository<T extends Entity> {
         }
         // 将列表转为sqlParameterSources
         List<BeanPropertySqlParameterSource> list = new ArrayList<>();
-        tList.forEach(t -> list.add(new BeanPropertySqlParameterSource(t)));
+        tList.forEach(t -> {
+                    if (t.getCreateTime() == null) {
+                        t.setCreateTime(LocalDateTime.now());
+                    }
+                    if (t.getUpdateTime() == null) {
+                        t.setUpdateTime(LocalDateTime.now());
+                    }
+                    list.add(new BeanPropertySqlParameterSource(t));
+                }
+        );
         BeanPropertySqlParameterSource[] sqlParameterSources = list.toArray(new BeanPropertySqlParameterSource[0]);
 
         // 拼装sql，目标是：INSERT INTO t(col1,col2,col3) VALUES (:field1,:field2,:field3)
@@ -96,7 +113,7 @@ public abstract class BaseRepository<T extends Entity> {
     public T findById(int id) {
         try {
             T t = jdbcTemplate.queryForObject("select * from " + tableName() + " where id = ? ", rowMapper, id);
-            log.info("findById: id={}, res={}", id, t);
+//            log.info("findById: id={}, res={}", id, t);
             return t;
         } catch (EmptyResultDataAccessException e) {
             String s = String.format("table=%s, id=%d", tableName(), id);
@@ -105,12 +122,28 @@ public abstract class BaseRepository<T extends Entity> {
     }
 
     /**
+     * 根据唯一索引查找一条记录
+     */
+    public T findByUniqueIndex(Map<String, Object> params) {
+        List<T> list = queryEqual(params);
+        if (list.size() == 0) {
+            return null;
+        } else {
+            return list.get(0);
+        }
+    }
+
+    /**
      * 查询表里总的记录数
      */
     public Integer count() {
         Integer count = jdbcTemplate.queryForObject("select count(*) from " + tableName(), Integer.class);
-        log.info("count: {}", count);
+//        log.info("count: {}", count);
         return count;
+    }
+
+    public List<T> getAll() {
+        return jdbcTemplate.query("select * from " + tableName(), rowMapper);
     }
 
     /**
@@ -137,29 +170,58 @@ public abstract class BaseRepository<T extends Entity> {
     }
 
     /**
-     * 根据条件模糊查询。不支持分页，多个条件之间使用and
-     *
-     * @param params
-     * @return
+     * 根据多个条件模糊查询。不支持分页，多个条件之间使用and
      */
-    public List<T> query(Map<String, String> params) {
+    public List<T> queryLike(Map<String, String> params) {
         StringBuilder sb = new StringBuilder("select * from " + tableName() + " where ");
         params.forEach((k, v) -> sb.append(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, k)).append(" like '%").append(v).append("%' and "));
         // 删除末尾多余的" and "
         StringUtils.deleteLastChars(sb, " and ");
 
         String sql = sb.toString();
-        log.info("query: params={}, sql={}", params, sql);
+        log.info("queryLike: params={}, sql={}", params, sql);
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public List<T> queryLike(String key, String value) {
+    /**
+     * 根据1个条件模糊查询。不支持分页
+     */
+    public List<T> queryLike(String key, Object value) {
         String sql = "select * from " + tableName() + " where " + key + " like '%" + value + "%'";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public List<T> queryEqual(String key, String value) {
-        String sql = String.format("select * from %s where %s = '%s'", tableName(), key, value);
+    /**
+     * 根据多个条件等值查询。不支持分页，多个条件之间使用and
+     */
+    public List<T> queryEqual(Map<String, Object> params) {
+        StringBuilder sb = new StringBuilder("select * from " + tableName() + " where ");
+        params.forEach((k, v) -> {
+            sb.append(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, k));
+            if (v.getClass().equals(Boolean.class)) {
+                sb.append(" = ").append(v).append(" and ");
+            } else {
+                sb.append(" = '").append(v).append("' and ");
+            }
+        });
+        // 删除末尾多余的" and "
+        StringUtils.deleteLastChars(sb, " and ");
+
+        String sql = sb.toString();
+        log.info("queryEqual: params={}, sql={}", params, sql);
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    /**
+     * 根据1个条件等值查询。不支持分页
+     */
+    public List<T> queryEqual(String key, Object value) {
+        String sql;
+        if (value.getClass().equals(Boolean.class)) {
+            sql = String.format("select * from %s where %s = %s", tableName(), key, value);
+        } else {
+            sql = String.format("select * from %s where %s = '%s'", tableName(), key, value);
+        }
         return jdbcTemplate.query(sql, rowMapper);
     }
 
@@ -173,6 +235,10 @@ public abstract class BaseRepository<T extends Entity> {
         return res;
     }
 
+    public void truncate() {
+        jdbcTemplate.update("truncate " + tableName());
+    }
+
     /**
      * 逐字段更新。主键不变。
      * 注意：没有检查传入对象是否包含空字段。
@@ -181,10 +247,19 @@ public abstract class BaseRepository<T extends Entity> {
      */
     public int update(T t) {
         if (findById(t.getId()) != null) {
-            StringBuilder sb = new StringBuilder("update " + tableName() + " set ");
+            StringBuilder sb = new StringBuilder("update " + tableName() + " set update_time='"
+                    + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "', ");
             Map<String, Object> fieldsValue = ClassUtils.getFieldsValue(t);
-            fieldsValue.forEach((k, v) -> sb.append(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, k))
-                    .append("='").append(v).append("', "));
+            fieldsValue.forEach((k, v) -> {
+                sb.append(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, k))
+                        .append("=");
+                // bool 类型不能加引号
+                if (v.getClass().equals(Boolean.class)) {
+                    sb.append(v).append(", ");
+                } else {
+                    sb.append("'").append(v).append("', ");
+                }
+            });
             // 删掉末尾多余的', '
             StringUtils.deleteLastChars(sb, ", ");
             sb.append(" where id=").append(t.getId());

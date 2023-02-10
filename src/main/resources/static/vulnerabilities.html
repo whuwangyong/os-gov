@@ -70,12 +70,6 @@
                         },
                         {
                             "type": "text",
-                            "label": "cwe编号",
-                            "name": "cwe",
-                            "id": "u:e2a4c6303624"
-                        },
-                        {
-                            "type": "text",
                             "label": "名称",
                             "name": "name",
                             "id": "u:71d4ee644305"
@@ -89,7 +83,7 @@
                         {
                             "type": "text",
                             "label": "利用难度",
-                            "name": "difficulty",
+                            "name": "utilizeDegree",
                             "id": "u:f025bd6a6443"
                         },
                         {
@@ -99,93 +93,83 @@
                             "id": "u:850e805df3d4"
                         },
                         {
-                            "type": "text",
-                            "label": "描述",
-                            "name": "description",
-                            "id": "u:45668c372d13"
-                        },
-                        {
-                            "type": "text",
-                            "label": "修复建议",
-                            "name": "suggestion",
-                            "id": "u:b56d5342a84d"
-                        },
-                        {
                             "type": "operation",
                             "label": "操作",
                             "buttons": [
+                                // {
+                                //     "label": "编辑",
+                                //     "type": "button",
+                                //     "actionType": "dialog",
+                                //     "level": "link",
+                                //     "dialog": {
+                                //         "title": "编辑",
+                                //         "body": {
+                                //             "type": "form",
+                                //             "api": "put:/api/vulnerabilities",
+                                //             "body": [
+                                //                 {
+                                //                     "name": "id",
+                                //                     "label": "ID",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "name": "cve",
+                                //                     "label": "cve编号",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "label": "cnnvd编号",
+                                //                     "name": "cnnvd",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "name": "cwe",
+                                //                     "label": "cwe编号",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "label": "名称",
+                                //                     "name": "name",
+                                //                     "type": "input-text"
+                                //                 },
+                                //                 {
+                                //                     "label": "等级",
+                                //                     "name": "level",
+                                //                     "type": "input-text"
+                                //                 },
+                                //                 {
+                                //                     "label": "利用难度",
+                                //                     "name": "difficulty",
+                                //                     "type": "input-text"
+                                //                 },
+                                //                 {
+                                //                     "label": "曝光日期",
+                                //                     "name": "exposedDate",
+                                //                     "type": "static"
+                                //                 },
+                                //                 {
+                                //                     "label": "描述",
+                                //                     "name": "description",
+                                //                     "type": "input-text"
+                                //                 },
+                                //                 {
+                                //                     "label": "修复建议",
+                                //                     "name": "suggestion",
+                                //                     "type": "input-text"
+                                //                 }
+                                //             ]
+                                //         }
+                                //     }
+                                // },
                                 {
-                                    "label": "编辑",
+                                    "label": "详情",
                                     "type": "button",
                                     "actionType": "dialog",
                                     "level": "link",
                                     "dialog": {
-                                        "title": "编辑",
-                                        "body": {
-                                            "type": "form",
-                                            "api": "put:/api/vulnerabilities",
-                                            "body": [
-                                                {
-                                                    "name": "id",
-                                                    "label": "ID",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "name": "cve",
-                                                    "label": "cve编号",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "cnnvd编号",
-                                                    "name": "cnnvd",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "name": "cwe",
-                                                    "label": "cwe编号",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "名称",
-                                                    "name": "name",
-                                                    "type": "input-text"
-                                                },
-                                                {
-                                                    "label": "等级",
-                                                    "name": "level",
-                                                    "type": "input-text"
-                                                },
-                                                {
-                                                    "label": "利用难度",
-                                                    "name": "difficulty",
-                                                    "type": "input-text"
-                                                },
-                                                {
-                                                    "label": "曝光日期",
-                                                    "name": "exposedDate",
-                                                    "type": "static"
-                                                },
-                                                {
-                                                    "label": "描述",
-                                                    "name": "description",
-                                                    "type": "input-text"
-                                                },
-                                                {
-                                                    "label": "修复建议",
-                                                    "name": "suggestion",
-                                                    "type": "input-text"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    "id": "u:82a00f0519f5"
-                                },
-                                {
-                                    "label": "查看",
-                                    "type": "button",
-                                    "actionType": "dialog",
-                                    "level": "link",
-                                    "dialog": {
+                                        "size": "lg",
+                                        "closeOnEsc": true,
+                                        "closeOnOutside": true,
                                         "title": "查看详情",
                                         "body": {
                                             "type": "form",
@@ -206,11 +190,6 @@
                                                     "type": "static"
                                                 },
                                                 {
-                                                    "name": "cwe",
-                                                    "label": "cwe编号",
-                                                    "type": "static"
-                                                },
-                                                {
                                                     "label": "名称",
                                                     "name": "name",
                                                     "type": "static"
@@ -222,7 +201,7 @@
                                                 },
                                                 {
                                                     "label": "利用难度",
-                                                    "name": "difficulty",
+                                                    "name": "utilizeDegree",
                                                     "type": "static"
                                                 },
                                                 {
@@ -237,30 +216,37 @@
                                                 },
                                                 {
                                                     "label": "修复建议",
-                                                    "name": "suggestion",
+                                                    "name": "solution",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "label": "创建时间",
+                                                    "name": "createTime",
+                                                    "type": "static"
+                                                },
+                                                {
+                                                    "label": "更新时间",
+                                                    "name": "updateTime",
                                                     "type": "static"
                                                 }
                                             ]
                                         }
-                                    },
-                                    "id": "u:88b580e46689"
+                                    }
                                 },
-                                {
-                                    "type": "button",
-                                    "label": "删除",
-                                    "actionType": "ajax",
-                                    "level": "link",
-                                    "className": "text-danger",
-                                    "confirmText": "确定要删除？",
-                                    "api": {
-                                        "method": "delete",
-                                        "url": "/api/vulnerabilities/${id}",
-                                        "dataType": "json"
-                                    },
-                                    "id": "u:08f0bd83cdf2"
-                                }
-                            ],
-                            "id": "u:d5e4d5572d90"
+                                // {
+                                //     "type": "button",
+                                //     "label": "删除",
+                                //     "actionType": "ajax",
+                                //     "level": "link",
+                                //     "className": "text-danger",
+                                //     "confirmText": "确定要删除？",
+                                //     "api": {
+                                //         "method": "delete",
+                                //         "url": "/api/vulnerabilities/${id}",
+                                //         "dataType": "json"
+                                //     }
+                                // }
+                            ]
                         }
                     ],
                     "bulkActions": [],
@@ -273,81 +259,82 @@
                         "filter"
                     ],
                     "filterColumnCount": 3,
-                    "headerToolbar": [
-                        {
-                            "label": "新增",
-                            "type": "button",
-                            "actionType": "dialog",
-                            "level": "primary",
-                            "dialog": {
-                                "title": "新增",
-                                "body": {
-                                    "type": "form",
-                                    "api": {
-                                        "method": "post",
-                                        "url": "/api/vulnerabilities",
-                                        "dataType": "json"
-                                    },
-                                    "body": [
-                                        {
-                                            "type": "input-text",
-                                            "name": "cve",
-                                            "label": "cve编号"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "cnnvd",
-                                            "label": "cnnvd编号"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "cwe",
-                                            "label": "cwe编号"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "name",
-                                            "label": "名称"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "level",
-                                            "label": "等级"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "difficulty",
-                                            "label": "利用难度"
-                                        },
-                                        {
-                                            "type": "input-date",
-                                            "name": "exposedDate",
-                                            "label": "曝光日期"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "description",
-                                            "label": "描述"
-                                        },
-                                        {
-                                            "type": "input-text",
-                                            "name": "suggestion",
-                                            "label": "修复建议"
-                                        }
-                                    ]
-                                }
-                            },
-                            "id": "u:aa37c5672282"
-                        },
-                        {
-                            "type": "bulk-actions"
-                        },
-                        {
-                            "type": "filter-toggler",
-                            "tpl": "内容",
-                            "id": "u:becef8ecace0"
-                        }
-                    ],
+                    // "headerToolbar": [
+                    //     {
+                    //         "label": "新增",
+                    //         "type": "button",
+                    //         "actionType": "dialog",
+                    //         "level": "primary",
+                    //         "dialog": {
+                    //             "title": "新增",
+                    //             "body": {
+                    //                 "type": "form",
+                    //                 "api": {
+                    //                     "method": "post",
+                    //                     "url": "/api/vulnerabilities",
+                    //                     "dataType": "json"
+                    //                 },
+                    //                 "body": [
+                    //                     {
+                    //                         "type": "input-text",
+                    //                         "name": "cve",
+                    //                         "label": "cve编号"
+                    //                     },
+                    //                     {
+                    //                         "type": "input-text",
+                    //                         "name": "cnnvd",
+                    //                         "label": "cnnvd编号"
+                    //                     },
+                    //                     {
+                    //                         "type": "input-text",
+                    //                         "name": "cwe",
+                    //                         "label": "cwe编号"
+                    //                     },
+                    //                     {
+                    //                         "type": "input-text",
+                    //                         "name": "name",
+                    //                         "label": "名称"
+                    //                     },
+                    //                     {
+                    //                         "type": "input-text",
+                    //                         "name": "level",
+                    //                         "label": "等级"
+                    //                     },
+                    //                     {
+                    //                         "type": "input-text",
+                    //                         "name": "difficulty",
+                    //                         "label": "利用难度"
+                    //                     },
+                    //                     {
+                    //                         "type": "input-date",
+                    //                         "name": "exposedDate",
+                    //                         "label": "曝光日期",
+                    //                         "format": "YYYY-MM-DD"
+                    //                     },
+                    //                     {
+                    //                         "type": "input-text",
+                    //                         "name": "description",
+                    //                         "label": "描述"
+                    //                     },
+                    //                     {
+                    //                         "type": "input-text",
+                    //                         "name": "suggestion",
+                    //                         "label": "修复建议"
+                    //                     }
+                    //                 ]
+                    //             }
+                    //         },
+                    //         "id": "u:aa37c5672282"
+                    //     },
+                    //     {
+                    //         "type": "bulk-actions"
+                    //     },
+                    //     {
+                    //         "type": "filter-toggler",
+                    //         "tpl": "内容",
+                    //         "id": "u:becef8ecace0"
+                    //     }
+                    // ],
                     "messages": {},
                     "perPageField": "pageSize",
                     "perPage": 20,
@@ -369,11 +356,6 @@
                                 "type": "input-text",
                                 "name": "cnnvd",
                                 "label": "cnnvd编号"
-                            },
-                            {
-                                "type": "input-text",
-                                "name": "cwe",
-                                "label": "cwe编号"
                             }
                         ],
                         "id": "u:5bee98c8a62e"
@@ -384,7 +366,8 @@
                 {
                     "type": "nav",
                     "stacked": true,
-                    "source": "get:/api/nav"
+                    "source": "get:/api/nav",
+                    "id": "u:6905cecb9b98"
                 }
             ]
         };
