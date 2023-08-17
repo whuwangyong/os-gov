@@ -3,6 +3,8 @@ package cn.whu.wy.osgov.controller.anemic;
 import cn.whu.wy.osgov.dto.response.ResponseEntity;
 import cn.whu.wy.osgov.entity.Entity;
 import cn.whu.wy.osgov.repository.BaseRepository;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +17,10 @@ import java.util.stream.Collectors;
  * Date 2022/08/11
  * Time 09:38
  */
+@Slf4j
 public abstract class BaseController<T extends Entity> {
 
     protected final BaseRepository<T> repository;
-
 
     public BaseController(BaseRepository<T> repository) {
         this.repository = repository;
@@ -61,6 +63,7 @@ public abstract class BaseController<T extends Entity> {
             list = repository.get(Integer.parseInt(pageSize), Integer.parseInt(page));
             return ResponseEntity.success(list, repository.count());
         } else {
+            log.warn("参数错误，params={}", params);
             return ResponseEntity.fail("参数错误:" + params);
         }
     }
@@ -71,12 +74,10 @@ public abstract class BaseController<T extends Entity> {
         return ResponseEntity.success();
     }
 
-
     @PutMapping
     public ResponseEntity update(@RequestBody T newObj) {
         repository.update(newObj);
         return ResponseEntity.success();
     }
-
 
 }
